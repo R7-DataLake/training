@@ -38,7 +38,7 @@ services:
     restart: always
     networks: 
       demo-network:
-        ipv4_address: 192.168.10.13
+        ipv4_address: 192.168.10.1
 
 networks:
   demo-network:
