@@ -1,0 +1,1 @@
+docker run -d -v $PWD/nginx.conf:/etc/nginx/nginx.conf nginx
