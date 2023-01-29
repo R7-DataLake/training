@@ -5,7 +5,7 @@ const fastify = require('fastify')({
 
 fastify.addHook('onSend', (request, reply, playload, next) => {
   reply.headers({
-    'X-Powered-By': 'R7 Health Platform System',
+    'X-Powered-By': 'DEMO Services',
     'X-Processed-By': process.env.SERVER_NAME || 'APP 1',
   });
   next();
