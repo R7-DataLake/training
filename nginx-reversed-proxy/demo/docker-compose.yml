@@ -1,0 +1,48 @@
+version: '2'
+services:
+  fastify_app1:
+    image: r7platform/fastify-demo
+    container_name: fastify_app1
+    environment:
+      - TEST_MESSAGE=APP1
+    restart: always
+    networks: 
+      demo-network:
+        ipv4_address: 192.168.10.10
+  fastify_app2:
+    image: r7platform/fastify-demo
+    container_name: fastify_app2
+    environment:
+      - TEST_MESSAGE=APP2
+    restart: always
+    networks: 
+      demo-network:
+        ipv4_address: 192.168.10.11
+  fastify_app3:
+    image: r7platform/fastify-demo
+    container_name: fastify_app3
+    environment:
+      - TEST_MESSAGE=APP3
+    restart: always
+    networks: 
+      demo-network:
+        ipv4_address: 192.168.10.12
+
+  nginx-demo:
+    image: r7platform/nginx-demo
+    container_name: nginx-demo
+    ports:
+      - 8080:80
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf
+    restart: always
+    networks: 
+      demo-network:
+        ipv4_address: 192.168.10.13
+
+networks:
+  demo-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 192.168.0.0/16
