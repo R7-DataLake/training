@@ -1,0 +1,372 @@
+version: '2'
+services:
+  
+  nginx:
+    image: nginx:stable-alpine
+    ports:
+      - 8088:80
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+    restart: always
+    networks: 
+      r7platform-network:
+        ipv4_address: 192.168.1.1
+
+  db:
+    image: postgres:15-alpine
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=r7platform
+    ports:
+      - '5444:5432'
+    volumes: 
+      - r7platform_db:/var/lib/postgresql/data
+      - ./db/r7platform.sql:/docker-entrypoint-initdb.d/create_tables.sql
+    networks: 
+      r7platform-network:
+        ipv4_address: 192.168.8.1
+
+  redis:
+    image: redis:7-alpine
+    restart: always
+    command: redis-server /usr/local/etc/redis/redis.conf
+    volumes: 
+      - r7platform_redis_db:/data
+      - ./redis.conf:/usr/local/etc/redis/redis.conf
+    networks: 
+      r7platform-network:
+        ipv4_address: 192.168.5.1
+
+  login1:
+    image: mophos/r7platform-login
+    environment:
+      - NODE_ENV=production
+      - R7PLATFORM_LOGIN_DB_HOST=192.168.8.1
+      - R7PLATFORM_LOGIN_DB_NAME=r7platform
+      - R7PLATFORM_LOGIN_DB_SCHEMA=users
+      - R7PLATFORM_LOGIN_DB_USER=postgres
+      - R7PLATFORM_LOGIN_DB_PORT=5432
+      - R7PLATFORM_LOGIN_DB_PASSWORD=postgres
+      - R7PLATFORM_LOGIN_SECRET_KEY=bWh00djwUDVVYZuQL1SR6urVry1GuYy5
+      - R7PLATFORM_LOGIN_HOSTNAME=LOGIN_SERV1
+    restart: always
+    depends_on:
+      - db
+    networks: 
+      r7platform-network:
+        ipv4_address: 192.168.3.1
+
+  login2:
+    image: mophos/r7platform-login
+    environment:
+      - NODE_ENV=production
+      - R7PLATFORM_LOGIN_DB_HOST=192.168.8.1
+      - R7PLATFORM_LOGIN_DB_NAME=r7platform
+      - R7PLATFORM_LOGIN_DB_SCHEMA=users
+      - R7PLATFORM_LOGIN_DB_USER=postgres
+      - R7PLATFORM_LOGIN_DB_PORT=5432
+      - R7PLATFORM_LOGIN_DB_PASSWORD=postgres
+      - R7PLATFORM_LOGIN_SECRET_KEY=bWh00djwUDVVYZuQL1SR6urVry1GuYy5
+      - R7PLATFORM_LOGIN_HOSTNAME=LOGIN_SERV2
+    restart: always
+    depends_on:
+      - db
+    networks: 
+      r7platform-network:
+        ipv4_address: 192.168.3.2
+
+  usm_web:
+    image: mophos/r7platform-usm-web
+    restart: always
+    networks: 
+      r7platform-network:
+        ipv4_address: 192.168.6.2
+
+  usm_api:
+    image: mophos/r7platform-usm-api
+    environment:
+      - NODE_ENV=production
+      - R7PLATFORM_USM_DB_HOST=192.168.8.1
+      - R7PLATFORM_USM_DB_PORT=5432
+      - R7PLATFORM_USM_DB_NAME=r7platform
+      - R7PLATFORM_USM_DB_SCHEMA=users
+      - R7PLATFORM_USM_DB_USER=postgres
+      - R7PLATFORM_USM_DB_PASSWORD=postgres
+      - R7PLATFORM_USM_DB_DEBUG=N
+      - R7PLATFORM_USM_SECRET_KEY=iNAzrIn2T2zUIt0o1Seh1ZUJFPtV22xD
+    restart: always
+    depends_on:
+      - db
+    networks: 
+      r7platform-network:
+        ipv4_address: 192.168.6.1
+
+  portal_web:
+    image: mophos/r7platform-portal-web
+    restart: always
+    networks: 
+      r7platform-network:
+        ipv4_address: 192.168.7.2
+
+  portal_api:
+    image: mophos/r7platform-portal-api
+    environment:
+      - NODE_ENV=production
+      - R7PLATFORM_PORTAL_API_DB_HOST=192.168.8.1
+      - R7PLATFORM_PORTAL_API_DB_PORT=5432
+      - R7PLATFORM_PORTAL_API_DB_NAME=r7platform
+      - R7PLATFORM_PORTAL_API_DB_SCHEMA=libs
+      - R7PLATFORM_PORTAL_API_DB_USER=postgres
+      - R7PLATFORM_PORTAL_API_DB_PASSWORD=postgres
+      - R7PLATFORM_PORTAL_API_SECRET_KEY=yQPaQEhRKkC971hiyOye0HLiliKePJDR
+      - R7PLATFORM_PORTAL_API_LOGIN_ENDPOINT=http://192.168.1.1/request
+    restart: always
+    depends_on:
+      - db
+      - login1
+      - login2
+    networks: 
+      r7platform-network:
+        ipv4_address: 192.168.7.1
+
+  queue_ui:
+    image: mophos/r7platform-queue-ui
+    environment:
+      - NODE_ENV=production
+      - R7PLATFORM_QUEUEUI_REDIS_HOST=192.168.5.1
+      - R7PLATFORM_QUEUEUI_REDIS_PORT=6379
+      - R7PLATFORM_QUEUEUI_REDIS_PASSWORD=GVWW6uFCdCjkfWpVod9t
+      - R7PLATFORM_QUEUEUI_UI_USERNAME=admin
+      - R7PLATFORM_QUEUEUI_UI_PASSWORD=admin
+      - R7PLATFORM_QUEUEUI_PLATFORM_ZONE_LIST=KHONKAEN,MAHASARAKHAM,ROIET,KALASIN
+      - R7PLATFORM_QUEUEUI_SECRET_KEY=dfCV3A5hnlYA8BFiIUoVnqpRhaNJpd6D
+      - R7PLATFORM_QUEUEUI_SUPER_SECRET_KEY=xSF8vZyYT78gQyYN8xj4qrZxlS26Xp1l
+      - R7PLATFORM_QUEUEUI_BASE_PATH=/queues
+    restart: always
+    depends_on:
+      - redis
+    networks: 
+      r7platform-network:
+        ipv4_address: 192.168.1.2
+
+  ingress_api1:
+    image: mophos/r7platform-ingress-api
+    environment:
+      - NODE_ENV=production
+      - R7PLATFORM_INGR_REDIS_HOST=192.168.5.1
+      - R7PLATFORM_INGR_REDIS_PASSWORD=GVWW6uFCdCjkfWpVod9t
+      - R7PLATFORM_INGR_SERVICE_HOSTNAME=INGRESS-SERV1
+      - R7PLATFORM_INGR_SECRET_KEY=bWh00djwUDVVYZuQL1SR6urVry1GuYy5
+    restart: always
+    depends_on:
+      - redis
+    networks: 
+      r7platform-network:
+        ipv4_address: 192.168.2.1
+
+  ingress_api2:
+    image: mophos/r7platform-ingress-api
+    environment:
+      - NODE_ENV=production
+      - R7PLATFORM_INGR_REDIS_HOST=192.168.5.1
+      - R7PLATFORM_INGR_REDIS_PASSWORD=GVWW6uFCdCjkfWpVod9t
+      - R7PLATFORM_INGR_SERVICE_HOSTNAME=INGRESS-SERV2
+      - R7PLATFORM_INGR_SECRET_KEY=bWh00djwUDVVYZuQL1SR6urVry1GuYy5
+    restart: always
+    depends_on:
+      - redis
+    networks: 
+      r7platform-network:
+        ipv4_address: 192.168.2.2
+
+  ingress_api3:
+    image: mophos/r7platform-ingress-api
+    environment:
+      - NODE_ENV=production
+      - R7PLATFORM_INGR_REDIS_HOST=192.168.5.1
+      - R7PLATFORM_INGR_REDIS_PASSWORD=GVWW6uFCdCjkfWpVod9t
+      - R7PLATFORM_INGR_SERVICE_HOSTNAME=INGRESS-SERV3
+      - R7PLATFORM_INGR_SECRET_KEY=bWh00djwUDVVYZuQL1SR6urVry1GuYy5
+    restart: always
+    depends_on:
+      - redis
+    networks: 
+      r7platform-network:
+        ipv4_address: 192.168.2.3
+
+  ingress_api4:
+    image: mophos/r7platform-ingress-api
+    environment:
+      - NODE_ENV=production
+      - R7PLATFORM_INGR_REDIS_HOST=192.168.5.1
+      - R7PLATFORM_INGR_REDIS_PASSWORD=GVWW6uFCdCjkfWpVod9t
+      - R7PLATFORM_INGR_SERVICE_HOSTNAME=INGRESS-SERV4
+      - R7PLATFORM_INGR_SECRET_KEY=bWh00djwUDVVYZuQL1SR6urVry1GuYy5
+    restart: always
+    depends_on:
+      - redis
+    networks: 
+      r7platform-network:
+        ipv4_address: 192.168.2.4
+
+  executor_kk:
+    image: mophos/r7platform-grpc-executor
+    environment:
+      - NODE_ENV=production
+      - R7PLATFORM_GRPC_EXECUTOR_DB_HOST=192.168.8.1
+      - R7PLATFORM_GRPC_EXECUTOR_DB_PORT=5432
+      - R7PLATFORM_GRPC_EXECUTOR_DB_NAME=r7platform
+      - R7PLATFORM_GRPC_EXECUTOR_DB_SCHEMA=rawdata_kk
+      - R7PLATFORM_GRPC_EXECUTOR_DB_USER=postgres
+      - R7PLATFORM_GRPC_EXECUTOR_DB_PASSWORD=postgres
+      - R7PLATFORM_GRPC_EXECUTOR_DB_POOL_MIN=2
+      - R7PLATFORM_GRPC_EXECUTOR_DB_POOL_MAX=10
+      - R7PLATFORM_GRPC_EXECUTOR_SECRET_KEY=KGA0Ne37xnhAezQUE7H490j4R1PvXDOO
+    restart: always
+    depends_on:
+      - db
+    networks: 
+      r7platform-network:
+        ipv4_address: 192.168.4.1
+
+  executor_msk:
+    image: mophos/r7platform-grpc-executor
+    environment:
+      - NODE_ENV=production
+      - R7PLATFORM_GRPC_EXECUTOR_DB_HOST=192.168.8.1
+      - R7PLATFORM_GRPC_EXECUTOR_DB_PORT=5432
+      - R7PLATFORM_GRPC_EXECUTOR_DB_NAME=r7platform
+      - R7PLATFORM_GRPC_EXECUTOR_DB_SCHEMA=rawdata_msk
+      - R7PLATFORM_GRPC_EXECUTOR_DB_USER=postgres
+      - R7PLATFORM_GRPC_EXECUTOR_DB_PASSWORD=postgres
+      - R7PLATFORM_GRPC_EXECUTOR_DB_POOL_MIN=2
+      - R7PLATFORM_GRPC_EXECUTOR_DB_POOL_MAX=10
+      - R7PLATFORM_GRPC_EXECUTOR_SECRET_KEY=KGA0Ne37xnhAezQUE7H490j4R1PvXDOO
+    restart: always
+    depends_on:
+      - db
+    networks: 
+      r7platform-network:
+        ipv4_address: 192.168.4.2
+
+  executor_roiet:
+    image: mophos/r7platform-grpc-executor
+    environment:
+      - NODE_ENV=production
+      - R7PLATFORM_GRPC_EXECUTOR_DB_HOST=192.168.8.1
+      - R7PLATFORM_GRPC_EXECUTOR_DB_PORT=5432
+      - R7PLATFORM_GRPC_EXECUTOR_DB_NAME=r7platform
+      - R7PLATFORM_GRPC_EXECUTOR_DB_SCHEMA=rawdata_roiet
+      - R7PLATFORM_GRPC_EXECUTOR_DB_USER=postgres
+      - R7PLATFORM_GRPC_EXECUTOR_DB_PASSWORD=postgres
+      - R7PLATFORM_GRPC_EXECUTOR_DB_POOL_MIN=2
+      - R7PLATFORM_GRPC_EXECUTOR_DB_POOL_MAX=10
+      - R7PLATFORM_GRPC_EXECUTOR_SECRET_KEY=KGA0Ne37xnhAezQUE7H490j4R1PvXDOO
+    restart: always
+    depends_on:
+      - db
+    networks: 
+      r7platform-network:
+        ipv4_address: 192.168.4.3
+
+  executor_kls:
+    image: mophos/r7platform-grpc-executor
+    environment:
+      - NODE_ENV=production
+      - R7PLATFORM_GRPC_EXECUTOR_DB_HOST=192.168.8.1
+      - R7PLATFORM_GRPC_EXECUTOR_DB_PORT=5432
+      - R7PLATFORM_GRPC_EXECUTOR_DB_NAME=r7platform
+      - R7PLATFORM_GRPC_EXECUTOR_DB_SCHEMA=rawdata_kls
+      - R7PLATFORM_GRPC_EXECUTOR_DB_USER=postgres
+      - R7PLATFORM_GRPC_EXECUTOR_DB_PASSWORD=postgres
+      - R7PLATFORM_GRPC_EXECUTOR_DB_POOL_MIN=2
+      - R7PLATFORM_GRPC_EXECUTOR_DB_POOL_MAX=10
+      - R7PLATFORM_GRPC_EXECUTOR_SECRET_KEY=KGA0Ne37xnhAezQUE7H490j4R1PvXDOO
+    restart: always
+    depends_on:
+      - db
+    networks: 
+      r7platform-network:
+        ipv4_address: 192.168.4.4
+
+  worker_kk:
+    image: mophos/r7platform-grpc-executor
+    environment:
+      - NODE_ENV=production
+      - R7PLATFORM_WORKER_ZONE=KHONKAEN
+      - R7PLATFORM_WORKER_REDIS_HOST=192.168.5.1
+      - R7PLATFORM_WORKER_REDIS_PASSWORD=GVWW6uFCdCjkfWpVod9t
+      - R7PLATFORM_WORKER_GRPC_SERVER=192.168.4.1:50051
+      - R7PLATFORM_WORKER_API_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.lErvGzln1a8MY3p0cN9Xt6ZqH8G4DaBV69kzHfvSoMs
+    restart: always
+    depends_on:
+      - redis
+      - executor_kk
+    networks: 
+      r7platform-network:
+        ipv4_address: 192.168.9.1
+
+  worker_msk:
+    image: mophos/r7platform-grpc-executor
+    environment:
+      - NODE_ENV=production
+      - R7PLATFORM_WORKER_ZONE=MAHASARAKHAM
+      - R7PLATFORM_WORKER_REDIS_HOST=192.168.5.1
+      - R7PLATFORM_WORKER_REDIS_PASSWORD=GVWW6uFCdCjkfWpVod9t
+      - R7PLATFORM_WORKER_GRPC_SERVER=192.168.4.2:50051
+      - R7PLATFORM_WORKER_API_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.lErvGzln1a8MY3p0cN9Xt6ZqH8G4DaBV69kzHfvSoMs
+    restart: always
+    depends_on:
+      - redis
+      - executor_msk
+    networks: 
+      r7platform-network:
+        ipv4_address: 192.168.9.2
+
+  worker_roiet:
+    image: mophos/r7platform-grpc-executor
+    environment:
+      - NODE_ENV=production
+      - R7PLATFORM_WORKER_ZONE=ROIET
+      - R7PLATFORM_WORKER_REDIS_HOST=192.168.5.1
+      - R7PLATFORM_WORKER_REDIS_PASSWORD=GVWW6uFCdCjkfWpVod9t
+      - R7PLATFORM_WORKER_GRPC_SERVER=192.168.4.3:50051
+      - R7PLATFORM_WORKER_API_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.lErvGzln1a8MY3p0cN9Xt6ZqH8G4DaBV69kzHfvSoMs
+    restart: always
+    depends_on:
+      - redis
+      - executor_roiet
+    networks: 
+      r7platform-network:
+        ipv4_address: 192.168.9.3
+
+  worker_kls:
+    image: mophos/r7platform-grpc-executor
+    environment:
+      - NODE_ENV=production
+      - R7PLATFORM_WORKER_ZONE=KALASIN
+      - R7PLATFORM_WORKER_REDIS_HOST=192.168.5.1
+      - R7PLATFORM_WORKER_REDIS_PASSWORD=GVWW6uFCdCjkfWpVod9t
+      - R7PLATFORM_WORKER_GRPC_SERVER=192.168.4.4:50051
+      - R7PLATFORM_WORKER_API_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.lErvGzln1a8MY3p0cN9Xt6ZqH8G4DaBV69kzHfvSoMs
+    restart: always
+    depends_on:
+      - redis
+      - executor_kls
+    networks: 
+      r7platform-network:
+        ipv4_address: 192.168.9.4
+
+networks:
+  r7platform-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 192.168.0.0/16
+volumes:
+  r7platform_db:
+    driver: local
+  r7platform_redis_db:
+    driver: local
