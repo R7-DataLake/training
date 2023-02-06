@@ -11,7 +11,6 @@ services:
     networks: 
       r7platform-network:
         ipv4_address: 192.168.1.1
-
   db:
     image: postgres:15-alpine
     restart: always
@@ -292,7 +291,7 @@ services:
         ipv4_address: 192.168.4.4
 
   worker_kk:
-    image: mophos/r7platform-grpc-executor
+    image: mophos/r7platform-worker
     environment:
       - NODE_ENV=production
       - R7PLATFORM_WORKER_ZONE=KHONKAEN
@@ -309,7 +308,7 @@ services:
         ipv4_address: 192.168.9.1
 
   worker_msk:
-    image: mophos/r7platform-grpc-executor
+    image: mophos/r7platform-worker
     environment:
       - NODE_ENV=production
       - R7PLATFORM_WORKER_ZONE=MAHASARAKHAM
@@ -326,7 +325,7 @@ services:
         ipv4_address: 192.168.9.2
 
   worker_roiet:
-    image: mophos/r7platform-grpc-executor
+    image: mophos/r7platform-worker
     environment:
       - NODE_ENV=production
       - R7PLATFORM_WORKER_ZONE=ROIET
@@ -343,7 +342,7 @@ services:
         ipv4_address: 192.168.9.3
 
   worker_kls:
-    image: mophos/r7platform-grpc-executor
+    image: mophos/r7platform-worker
     environment:
       - NODE_ENV=production
       - R7PLATFORM_WORKER_ZONE=KALASIN
