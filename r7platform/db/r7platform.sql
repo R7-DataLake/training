@@ -5,7 +5,7 @@
 -- Dumped from database version 15.0
 -- Dumped by pg_dump version 15.0
 
--- Started on 2023-02-06 15:43:01
+-- Started on 2023-02-07 05:39:24
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -487,7 +487,7 @@ CREATE TABLE rawdata_kk.opd (
     hospcode character varying(10) NOT NULL,
     hn character varying(50) NOT NULL,
     clinic character varying(10),
-    date_serv date,
+    date_serv date NOT NULL,
     time_serv time without time zone,
     seq character varying(15) NOT NULL,
     chiefcomp character varying,
@@ -500,8 +500,8 @@ CREATE TABLE rawdata_kk.opd (
     typeout character(1),
     ins_type character varying(10),
     ins_number character varying(15),
-    ins_hospmain character(5),
-    ins_hospsub character(5),
+    ins_hospmain character varying(10),
+    ins_hospsub character varying(10),
     diag_text character varying(255),
     d_update timestamp without time zone
 );
@@ -728,7 +728,7 @@ CREATE TABLE rawdata_kls.opd (
     hospcode character varying(10) NOT NULL,
     hn character varying(50) NOT NULL,
     clinic character varying(10),
-    date_serv date,
+    date_serv date NOT NULL,
     time_serv time without time zone,
     seq character varying(15) NOT NULL,
     chiefcomp character varying,
@@ -741,8 +741,8 @@ CREATE TABLE rawdata_kls.opd (
     typeout character(1),
     ins_type character varying(10),
     ins_number character varying(15),
-    ins_hospmain character(5),
-    ins_hospsub character(5),
+    ins_hospmain character varying(10),
+    ins_hospsub character varying(10),
     diag_text character varying(255),
     d_update timestamp without time zone
 );
@@ -969,7 +969,7 @@ CREATE TABLE rawdata_msk.opd (
     hospcode character varying(10) NOT NULL,
     hn character varying(50) NOT NULL,
     clinic character varying(10),
-    date_serv date,
+    date_serv date NOT NULL,
     time_serv time without time zone,
     seq character varying(15) NOT NULL,
     chiefcomp character varying,
@@ -982,8 +982,8 @@ CREATE TABLE rawdata_msk.opd (
     typeout character(1),
     ins_type character varying(10),
     ins_number character varying(15),
-    ins_hospmain character(5),
-    ins_hospsub character(5),
+    ins_hospmain character varying(10),
+    ins_hospsub character varying(10),
     diag_text character varying(255),
     d_update timestamp without time zone
 );
@@ -1210,7 +1210,7 @@ CREATE TABLE rawdata_roiet.opd (
     hospcode character varying(10) NOT NULL,
     hn character varying(50) NOT NULL,
     clinic character varying(10),
-    date_serv date,
+    date_serv date NOT NULL,
     time_serv time without time zone,
     seq character varying(15) NOT NULL,
     chiefcomp character varying,
@@ -1223,8 +1223,8 @@ CREATE TABLE rawdata_roiet.opd (
     typeout character(1),
     ins_type character varying(10),
     ins_number character varying(15),
-    ins_hospmain character(5),
-    ins_hospsub character(5),
+    ins_hospmain character varying(10),
+    ins_hospsub character varying(10),
     diag_text character varying(255),
     d_update timestamp without time zone
 );
@@ -1310,8 +1310,8 @@ CREATE TABLE users.admin (
 --
 
 CREATE TABLE users.hospitals (
-    hospcode character varying NOT NULL,
-    hospname character varying,
+    hospcode character varying(10) NOT NULL,
+    hospname character varying(255),
     zone_code character(4),
     enabled boolean DEFAULT true,
     is_deleted boolean DEFAULT false
@@ -1340,11 +1340,11 @@ CREATE TABLE users.tokens (
 
 CREATE TABLE users.users (
     id uuid DEFAULT gen_random_uuid() NOT NULL,
-    first_name character varying,
-    last_name character varying,
-    hospcode character varying,
-    username character varying NOT NULL,
-    password character varying,
+    first_name character varying(150),
+    last_name character varying(150),
+    hospcode character varying(10),
+    username character varying(50) NOT NULL,
+    password character varying(150),
     enabled boolean DEFAULT false,
     is_deleted boolean DEFAULT false,
     email character varying(50),
@@ -1359,7 +1359,7 @@ CREATE TABLE users.users (
 
 CREATE TABLE users.zones (
     code character(4) NOT NULL,
-    name character varying,
+    name character varying(150),
     ingress_zone character varying(20),
     enabled boolean DEFAULT true
 );
@@ -2228,12 +2228,12 @@ ALTER TABLE ONLY rawdata_kk.lab
 
 
 --
--- TOC entry 3562 (class 2606 OID 98483)
+-- TOC entry 3562 (class 2606 OID 98812)
 -- Name: opd opd_pk; Type: CONSTRAINT; Schema: rawdata_kk; Owner: -
 --
 
 ALTER TABLE ONLY rawdata_kk.opd
-    ADD CONSTRAINT opd_pk PRIMARY KEY (hospcode, hn, seq);
+    ADD CONSTRAINT opd_pk PRIMARY KEY (hospcode, hn, date_serv, seq);
 
 
 --
@@ -2336,12 +2336,12 @@ ALTER TABLE ONLY rawdata_kls.lab
 
 
 --
--- TOC entry 3685 (class 2606 OID 98736)
+-- TOC entry 3685 (class 2606 OID 98810)
 -- Name: opd opd_pk; Type: CONSTRAINT; Schema: rawdata_kls; Owner: -
 --
 
 ALTER TABLE ONLY rawdata_kls.opd
-    ADD CONSTRAINT opd_pk PRIMARY KEY (hospcode, hn, seq);
+    ADD CONSTRAINT opd_pk PRIMARY KEY (hospcode, hn, date_serv, seq);
 
 
 --
@@ -2444,12 +2444,12 @@ ALTER TABLE ONLY rawdata_msk.lab
 
 
 --
--- TOC entry 3603 (class 2606 OID 98565)
+-- TOC entry 3603 (class 2606 OID 98808)
 -- Name: opd opd_pk; Type: CONSTRAINT; Schema: rawdata_msk; Owner: -
 --
 
 ALTER TABLE ONLY rawdata_msk.opd
-    ADD CONSTRAINT opd_pk PRIMARY KEY (hospcode, hn, seq);
+    ADD CONSTRAINT opd_pk PRIMARY KEY (hospcode, hn, date_serv, seq);
 
 
 --
@@ -2552,12 +2552,12 @@ ALTER TABLE ONLY rawdata_roiet.lab
 
 
 --
--- TOC entry 3644 (class 2606 OID 98650)
+-- TOC entry 3644 (class 2606 OID 98806)
 -- Name: opd opd_pk; Type: CONSTRAINT; Schema: rawdata_roiet; Owner: -
 --
 
 ALTER TABLE ONLY rawdata_roiet.opd
-    ADD CONSTRAINT opd_pk PRIMARY KEY (hospcode, hn, seq);
+    ADD CONSTRAINT opd_pk PRIMARY KEY (hospcode, hn, date_serv, seq);
 
 
 --
@@ -2597,7 +2597,7 @@ ALTER TABLE ONLY users.admin
 
 
 --
--- TOC entry 3490 (class 2606 OID 41106)
+-- TOC entry 3490 (class 2606 OID 107069)
 -- Name: hospitals hospitals_pk; Type: CONSTRAINT; Schema: users; Owner: -
 --
 
@@ -2615,7 +2615,7 @@ ALTER TABLE ONLY users.tokens
 
 
 --
--- TOC entry 3487 (class 2606 OID 41095)
+-- TOC entry 3487 (class 2606 OID 107117)
 -- Name: users users_pk; Type: CONSTRAINT; Schema: users; Owner: -
 --
 
@@ -3225,7 +3225,7 @@ CREATE INDEX tokens_expires_at_idx ON users.tokens USING btree (expires_at);
 
 
 --
--- TOC entry 3485 (class 1259 OID 41129)
+-- TOC entry 3485 (class 1259 OID 107089)
 -- Name: users_hospcode_idx; Type: INDEX; Schema: users; Owner: -
 --
 
@@ -3250,7 +3250,7 @@ ALTER TABLE ONLY users.hospitals
 
 
 --
--- TOC entry 3699 (class 2606 OID 41123)
+-- TOC entry 3699 (class 2606 OID 107090)
 -- Name: users users_fk; Type: FK CONSTRAINT; Schema: users; Owner: -
 --
 
@@ -3258,7 +3258,7 @@ ALTER TABLE ONLY users.users
     ADD CONSTRAINT users_fk FOREIGN KEY (hospcode) REFERENCES users.hospitals(hospcode);
 
 
--- Completed on 2023-02-06 15:43:02
+-- Completed on 2023-02-07 05:39:24
 
 --
 -- PostgreSQL database dump complete
