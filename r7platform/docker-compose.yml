@@ -1,4 +1,4 @@
-version: '2'
+version: '3'
 services:
   
   nginx:
@@ -139,7 +139,7 @@ services:
       - R7PLATFORM_QUEUEUI_REDIS_PASSWORD=GVWW6uFCdCjkfWpVod9t
       - R7PLATFORM_QUEUEUI_UI_USERNAME=admin
       - R7PLATFORM_QUEUEUI_UI_PASSWORD=admin
-      - R7PLATFORM_QUEUEUI_PLATFORM_ZONE_LIST=KHONKAEN,MAHASARAKHAM,ROIET,KALASIN
+      - R7PLATFORM_QUEUEUI_PLATFORM_ZONE_LIST=KHONKAEN,MAHASARAKHAM,ROIET,KALASIN,LOG,METADATA
       - R7PLATFORM_QUEUEUI_SECRET_KEY=dfCV3A5hnlYA8BFiIUoVnqpRhaNJpd6D
       - R7PLATFORM_QUEUEUI_SUPER_SECRET_KEY=xSF8vZyYT78gQyYN8xj4qrZxlS26Xp1l
       - R7PLATFORM_QUEUEUI_BASE_PATH=/queues
@@ -302,7 +302,6 @@ services:
     restart: always
     depends_on:
       - redis
-      - executor_kk
     networks: 
       r7platform-network:
         ipv4_address: 192.168.9.1
@@ -319,7 +318,6 @@ services:
     restart: always
     depends_on:
       - redis
-      - executor_msk
     networks: 
       r7platform-network:
         ipv4_address: 192.168.9.2
@@ -336,7 +334,6 @@ services:
     restart: always
     depends_on:
       - redis
-      - executor_roiet
     networks: 
       r7platform-network:
         ipv4_address: 192.168.9.3
@@ -353,10 +350,55 @@ services:
     restart: always
     depends_on:
       - redis
-      - executor_kls
     networks: 
       r7platform-network:
         ipv4_address: 192.168.9.4
+
+  worker_log:
+    image: mophos/r7platform-worker-log
+    environment:
+      - NODE_ENV=production
+      - R7PLATFORM_WORKER_LOG_REDIS_HOST=192.168.5.1
+      - R7PLATFORM_WORKER_LOG_REDIS_PASSWORD=GVWW6uFCdCjkfWpVod9t
+      - R7PLATFORM_WORKER_LOG_DB_HOST=192.168.8.1
+      - R7PLATFORM_WORKER_LOG_DB_USER=postgres
+      - R7PLATFORM_WORKER_LOG_DB_PASSWORD=postgres
+      - R7PLATFORM_WORKER_LOG_DB_PORT=5432
+      - R7PLATFORM_WORKER_LOG_DB_NAME=r7platform
+      - R7PLATFORM_WORKER_LOG_DB_SCHEMA=logs
+      - R7PLATFORM_WORKER_LOG_DB_POOL_MIN=2
+      - R7PLATFORM_WORKER_LOG_DB_POOL_MAX=10
+      - R7PLATFORM_WORKER_LOG_CONCURRENCY=4
+    restart: always
+    depends_on:
+      - redis
+      - db
+    networks: 
+      r7platform-network:
+        ipv4_address: 192.168.9.6
+
+  worker_metadata:
+    image: mophos/r7platform-worker-metadata
+    environment:
+      - NODE_ENV=production
+      - R7PLATFORM_WORKER_METADATA_REDIS_HOST=192.168.5.1
+      - R7PLATFORM_WORKER_METADATA_REDIS_PASSWORD=GVWW6uFCdCjkfWpVod9t
+      - R7PLATFORM_WORKER_METADATA_DB_HOST=192.168.8.1
+      - R7PLATFORM_WORKER_METADATA_DB_USER=postgres
+      - R7PLATFORM_WORKER_METADATA_DB_PASSWORD=postgres
+      - R7PLATFORM_WORKER_METADATA_DB_PORT=5432
+      - R7PLATFORM_WORKER_METADATA_DB_NAME=r7platform
+      - R7PLATFORM_WORKER_METADATA_DB_SCHEMA=metadata
+      - R7PLATFORM_WORKER_METADATA_DB_POOL_MIN=2
+      - R7PLATFORM_WORKER_METADATA_DB_POOL_MAX=10
+      - R7PLATFORM_WORKER_METADATA_CONCURRENCY=4
+    restart: always
+    depends_on:
+      - redis
+      - db
+    networks: 
+      r7platform-network:
+        ipv4_address: 192.168.9.5
 
 networks:
   r7platform-network:

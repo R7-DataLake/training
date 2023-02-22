@@ -5,7 +5,7 @@
 -- Dumped from database version 15.0
 -- Dumped by pg_dump version 15.0
 
--- Started on 2023-02-07 05:39:24
+-- Started on 2023-02-22 20:37:14
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -24,6 +24,22 @@ SET row_security = off;
 --
 
 CREATE SCHEMA libs;
+
+
+--
+-- TOC entry 12 (class 2615 OID 107156)
+-- Name: logs; Type: SCHEMA; Schema: -; Owner: -
+--
+
+CREATE SCHEMA logs;
+
+
+--
+-- TOC entry 11 (class 2615 OID 107139)
+-- Name: metadata; Type: SCHEMA; Schema: -; Owner: -
+--
+
+CREATE SCHEMA metadata;
 
 
 --
@@ -67,7 +83,7 @@ CREATE SCHEMA users;
 
 
 --
--- TOC entry 288 (class 1255 OID 73938)
+-- TOC entry 296 (class 1255 OID 73938)
 -- Name: hash_password(character varying); Type: FUNCTION; Schema: users; Owner: -
 --
 
@@ -85,7 +101,7 @@ SET default_tablespace = '';
 SET default_table_access_method = heap;
 
 --
--- TOC entry 229 (class 1259 OID 73996)
+-- TOC entry 231 (class 1259 OID 73996)
 -- Name: clinic_mappings; Type: TABLE; Schema: libs; Owner: -
 --
 
@@ -98,7 +114,7 @@ CREATE TABLE libs.clinic_mappings (
 
 
 --
--- TOC entry 228 (class 1259 OID 73986)
+-- TOC entry 230 (class 1259 OID 73986)
 -- Name: clinics; Type: TABLE; Schema: libs; Owner: -
 --
 
@@ -113,7 +129,7 @@ CREATE TABLE libs.clinics (
 
 
 --
--- TOC entry 226 (class 1259 OID 73960)
+-- TOC entry 228 (class 1259 OID 73960)
 -- Name: drug_mappings; Type: TABLE; Schema: libs; Owner: -
 --
 
@@ -129,7 +145,7 @@ CREATE TABLE libs.drug_mappings (
 
 
 --
--- TOC entry 230 (class 1259 OID 74001)
+-- TOC entry 232 (class 1259 OID 74001)
 -- Name: drug_usages; Type: TABLE; Schema: libs; Owner: -
 --
 
@@ -146,7 +162,7 @@ CREATE TABLE libs.drug_usages (
 
 
 --
--- TOC entry 224 (class 1259 OID 73944)
+-- TOC entry 226 (class 1259 OID 73944)
 -- Name: drugs; Type: TABLE; Schema: libs; Owner: -
 --
 
@@ -161,7 +177,7 @@ CREATE TABLE libs.drugs (
 
 
 --
--- TOC entry 227 (class 1259 OID 73981)
+-- TOC entry 229 (class 1259 OID 73981)
 -- Name: insurance_mappings; Type: TABLE; Schema: libs; Owner: -
 --
 
@@ -174,7 +190,7 @@ CREATE TABLE libs.insurance_mappings (
 
 
 --
--- TOC entry 225 (class 1259 OID 73953)
+-- TOC entry 227 (class 1259 OID 73953)
 -- Name: insurances; Type: TABLE; Schema: libs; Owner: -
 --
 
@@ -189,7 +205,7 @@ CREATE TABLE libs.insurances (
 
 
 --
--- TOC entry 232 (class 1259 OID 74028)
+-- TOC entry 234 (class 1259 OID 74028)
 -- Name: lab_groups; Type: TABLE; Schema: libs; Owner: -
 --
 
@@ -204,7 +220,7 @@ CREATE TABLE libs.lab_groups (
 
 
 --
--- TOC entry 239 (class 1259 OID 82070)
+-- TOC entry 241 (class 1259 OID 82070)
 -- Name: lab_mappings; Type: TABLE; Schema: libs; Owner: -
 --
 
@@ -219,7 +235,7 @@ CREATE TABLE libs.lab_mappings (
 
 
 --
--- TOC entry 231 (class 1259 OID 74021)
+-- TOC entry 233 (class 1259 OID 74021)
 -- Name: labs; Type: TABLE; Schema: libs; Owner: -
 --
 
@@ -235,7 +251,7 @@ CREATE TABLE libs.labs (
 
 
 --
--- TOC entry 236 (class 1259 OID 74054)
+-- TOC entry 238 (class 1259 OID 74054)
 -- Name: nation_mappings; Type: TABLE; Schema: libs; Owner: -
 --
 
@@ -248,7 +264,7 @@ CREATE TABLE libs.nation_mappings (
 
 
 --
--- TOC entry 235 (class 1259 OID 74047)
+-- TOC entry 237 (class 1259 OID 74047)
 -- Name: nations; Type: TABLE; Schema: libs; Owner: -
 --
 
@@ -263,7 +279,7 @@ CREATE TABLE libs.nations (
 
 
 --
--- TOC entry 234 (class 1259 OID 74042)
+-- TOC entry 236 (class 1259 OID 74042)
 -- Name: occupation_mappings; Type: TABLE; Schema: libs; Owner: -
 --
 
@@ -276,7 +292,7 @@ CREATE TABLE libs.occupation_mappings (
 
 
 --
--- TOC entry 233 (class 1259 OID 74035)
+-- TOC entry 235 (class 1259 OID 74035)
 -- Name: occupations; Type: TABLE; Schema: libs; Owner: -
 --
 
@@ -291,7 +307,7 @@ CREATE TABLE libs.occupations (
 
 
 --
--- TOC entry 237 (class 1259 OID 74059)
+-- TOC entry 239 (class 1259 OID 74059)
 -- Name: providers; Type: TABLE; Schema: libs; Owner: -
 --
 
@@ -313,7 +329,7 @@ CREATE TABLE libs.providers (
 
 
 --
--- TOC entry 238 (class 1259 OID 74064)
+-- TOC entry 240 (class 1259 OID 74064)
 -- Name: wards; Type: TABLE; Schema: libs; Owner: -
 --
 
@@ -328,7 +344,87 @@ CREATE TABLE libs.wards (
 
 
 --
--- TOC entry 240 (class 1259 OID 98426)
+-- TOC entry 292 (class 1259 OID 107157)
+-- Name: transactions; Type: TABLE; Schema: logs; Owner: -
+--
+
+CREATE TABLE logs.transactions (
+    trx_id uuid NOT NULL,
+    hospcode character varying(10) NOT NULL,
+    user_id uuid NOT NULL,
+    ingress_zone character varying(100) NOT NULL,
+    file_name character varying(50),
+    total_records numeric DEFAULT 0,
+    status character varying,
+    created_at timestamp without time zone,
+    error text
+);
+
+
+--
+-- TOC entry 293 (class 1259 OID 107181)
+-- Name: ipd; Type: TABLE; Schema: metadata; Owner: -
+--
+
+CREATE TABLE metadata.ipd (
+    hospcode character varying(10) NOT NULL,
+    hn character varying(50) NOT NULL,
+    an character varying(50) NOT NULL,
+    dischs character(1) NOT NULL,
+    discht character(1) NOT NULL,
+    dateadm date NOT NULL,
+    timeadm time without time zone NOT NULL,
+    datedsc date NOT NULL,
+    timedsc time without time zone NOT NULL,
+    d_update timestamp without time zone NOT NULL,
+    ingress_zone character varying(50) NOT NULL,
+    created_at timestamp without time zone DEFAULT now(),
+    updated_at timestamp without time zone
+);
+
+
+--
+-- TOC entry 291 (class 1259 OID 107150)
+-- Name: opd; Type: TABLE; Schema: metadata; Owner: -
+--
+
+CREATE TABLE metadata.opd (
+    hospcode character varying(10) NOT NULL,
+    hn character varying(50) NOT NULL,
+    seq character varying(50) NOT NULL,
+    date_serv date NOT NULL,
+    time_serv time without time zone NOT NULL,
+    diag_text character varying(255),
+    created_at timestamp without time zone DEFAULT now(),
+    d_update timestamp without time zone,
+    chiefcomp character varying(255),
+    ingress_zone character varying(50) NOT NULL,
+    updated_at timestamp without time zone
+);
+
+
+--
+-- TOC entry 290 (class 1259 OID 107140)
+-- Name: person; Type: TABLE; Schema: metadata; Owner: -
+--
+
+CREATE TABLE metadata.person (
+    hospcode character varying(10) NOT NULL,
+    hn character varying(50) NOT NULL,
+    cid character varying(13) NOT NULL,
+    fname character varying(150) NOT NULL,
+    lname character varying(150) NOT NULL,
+    birth date NOT NULL,
+    sex character(1) NOT NULL,
+    created_at timestamp without time zone DEFAULT now(),
+    d_update timestamp without time zone,
+    ingress_zone character varying(100) NOT NULL,
+    updated_at timestamp without time zone
+);
+
+
+--
+-- TOC entry 242 (class 1259 OID 98426)
 -- Name: appoint; Type: TABLE; Schema: rawdata_kk; Owner: -
 --
 
@@ -346,7 +442,7 @@ CREATE TABLE rawdata_kk.appoint (
 
 
 --
--- TOC entry 241 (class 1259 OID 98429)
+-- TOC entry 243 (class 1259 OID 98429)
 -- Name: chronic; Type: TABLE; Schema: rawdata_kk; Owner: -
 --
 
@@ -363,7 +459,7 @@ CREATE TABLE rawdata_kk.chronic (
 
 
 --
--- TOC entry 242 (class 1259 OID 98432)
+-- TOC entry 244 (class 1259 OID 98432)
 -- Name: drug; Type: TABLE; Schema: rawdata_kk; Owner: -
 --
 
@@ -385,7 +481,7 @@ CREATE TABLE rawdata_kk.drug (
 
 
 --
--- TOC entry 243 (class 1259 OID 98435)
+-- TOC entry 245 (class 1259 OID 98435)
 -- Name: drugallergy; Type: TABLE; Schema: rawdata_kk; Owner: -
 --
 
@@ -405,7 +501,7 @@ CREATE TABLE rawdata_kk.drugallergy (
 
 
 --
--- TOC entry 244 (class 1259 OID 98438)
+-- TOC entry 246 (class 1259 OID 98438)
 -- Name: ipd; Type: TABLE; Schema: rawdata_kk; Owner: -
 --
 
@@ -427,7 +523,7 @@ CREATE TABLE rawdata_kk.ipd (
 
 
 --
--- TOC entry 245 (class 1259 OID 98442)
+-- TOC entry 247 (class 1259 OID 98442)
 -- Name: ipdx; Type: TABLE; Schema: rawdata_kk; Owner: -
 --
 
@@ -443,7 +539,7 @@ CREATE TABLE rawdata_kk.ipdx (
 
 
 --
--- TOC entry 246 (class 1259 OID 98445)
+-- TOC entry 248 (class 1259 OID 98445)
 -- Name: ipop; Type: TABLE; Schema: rawdata_kk; Owner: -
 --
 
@@ -463,7 +559,7 @@ CREATE TABLE rawdata_kk.ipop (
 
 
 --
--- TOC entry 247 (class 1259 OID 98448)
+-- TOC entry 249 (class 1259 OID 98448)
 -- Name: lab; Type: TABLE; Schema: rawdata_kk; Owner: -
 --
 
@@ -479,7 +575,7 @@ CREATE TABLE rawdata_kk.lab (
 
 
 --
--- TOC entry 248 (class 1259 OID 98451)
+-- TOC entry 250 (class 1259 OID 98451)
 -- Name: opd; Type: TABLE; Schema: rawdata_kk; Owner: -
 --
 
@@ -508,7 +604,7 @@ CREATE TABLE rawdata_kk.opd (
 
 
 --
--- TOC entry 249 (class 1259 OID 98456)
+-- TOC entry 251 (class 1259 OID 98456)
 -- Name: opdx; Type: TABLE; Schema: rawdata_kk; Owner: -
 --
 
@@ -525,7 +621,7 @@ CREATE TABLE rawdata_kk.opdx (
 
 
 --
--- TOC entry 250 (class 1259 OID 98459)
+-- TOC entry 252 (class 1259 OID 98459)
 -- Name: opop; Type: TABLE; Schema: rawdata_kk; Owner: -
 --
 
@@ -542,7 +638,7 @@ CREATE TABLE rawdata_kk.opop (
 
 
 --
--- TOC entry 251 (class 1259 OID 98463)
+-- TOC entry 253 (class 1259 OID 98463)
 -- Name: person; Type: TABLE; Schema: rawdata_kk; Owner: -
 --
 
@@ -569,7 +665,7 @@ CREATE TABLE rawdata_kk.person (
 
 
 --
--- TOC entry 276 (class 1259 OID 98679)
+-- TOC entry 278 (class 1259 OID 98679)
 -- Name: appoint; Type: TABLE; Schema: rawdata_kls; Owner: -
 --
 
@@ -587,7 +683,7 @@ CREATE TABLE rawdata_kls.appoint (
 
 
 --
--- TOC entry 277 (class 1259 OID 98682)
+-- TOC entry 279 (class 1259 OID 98682)
 -- Name: chronic; Type: TABLE; Schema: rawdata_kls; Owner: -
 --
 
@@ -604,7 +700,7 @@ CREATE TABLE rawdata_kls.chronic (
 
 
 --
--- TOC entry 278 (class 1259 OID 98685)
+-- TOC entry 280 (class 1259 OID 98685)
 -- Name: drug; Type: TABLE; Schema: rawdata_kls; Owner: -
 --
 
@@ -626,7 +722,7 @@ CREATE TABLE rawdata_kls.drug (
 
 
 --
--- TOC entry 279 (class 1259 OID 98688)
+-- TOC entry 281 (class 1259 OID 98688)
 -- Name: drugallergy; Type: TABLE; Schema: rawdata_kls; Owner: -
 --
 
@@ -646,7 +742,7 @@ CREATE TABLE rawdata_kls.drugallergy (
 
 
 --
--- TOC entry 280 (class 1259 OID 98691)
+-- TOC entry 282 (class 1259 OID 98691)
 -- Name: ipd; Type: TABLE; Schema: rawdata_kls; Owner: -
 --
 
@@ -668,7 +764,7 @@ CREATE TABLE rawdata_kls.ipd (
 
 
 --
--- TOC entry 281 (class 1259 OID 98695)
+-- TOC entry 283 (class 1259 OID 98695)
 -- Name: ipdx; Type: TABLE; Schema: rawdata_kls; Owner: -
 --
 
@@ -684,7 +780,7 @@ CREATE TABLE rawdata_kls.ipdx (
 
 
 --
--- TOC entry 282 (class 1259 OID 98698)
+-- TOC entry 284 (class 1259 OID 98698)
 -- Name: ipop; Type: TABLE; Schema: rawdata_kls; Owner: -
 --
 
@@ -704,7 +800,7 @@ CREATE TABLE rawdata_kls.ipop (
 
 
 --
--- TOC entry 283 (class 1259 OID 98701)
+-- TOC entry 285 (class 1259 OID 98701)
 -- Name: lab; Type: TABLE; Schema: rawdata_kls; Owner: -
 --
 
@@ -720,7 +816,7 @@ CREATE TABLE rawdata_kls.lab (
 
 
 --
--- TOC entry 284 (class 1259 OID 98704)
+-- TOC entry 286 (class 1259 OID 98704)
 -- Name: opd; Type: TABLE; Schema: rawdata_kls; Owner: -
 --
 
@@ -749,7 +845,7 @@ CREATE TABLE rawdata_kls.opd (
 
 
 --
--- TOC entry 285 (class 1259 OID 98709)
+-- TOC entry 287 (class 1259 OID 98709)
 -- Name: opdx; Type: TABLE; Schema: rawdata_kls; Owner: -
 --
 
@@ -766,7 +862,7 @@ CREATE TABLE rawdata_kls.opdx (
 
 
 --
--- TOC entry 286 (class 1259 OID 98712)
+-- TOC entry 288 (class 1259 OID 98712)
 -- Name: opop; Type: TABLE; Schema: rawdata_kls; Owner: -
 --
 
@@ -783,7 +879,7 @@ CREATE TABLE rawdata_kls.opop (
 
 
 --
--- TOC entry 287 (class 1259 OID 98716)
+-- TOC entry 289 (class 1259 OID 98716)
 -- Name: person; Type: TABLE; Schema: rawdata_kls; Owner: -
 --
 
@@ -810,7 +906,7 @@ CREATE TABLE rawdata_kls.person (
 
 
 --
--- TOC entry 252 (class 1259 OID 98508)
+-- TOC entry 254 (class 1259 OID 98508)
 -- Name: appoint; Type: TABLE; Schema: rawdata_msk; Owner: -
 --
 
@@ -828,7 +924,7 @@ CREATE TABLE rawdata_msk.appoint (
 
 
 --
--- TOC entry 253 (class 1259 OID 98511)
+-- TOC entry 255 (class 1259 OID 98511)
 -- Name: chronic; Type: TABLE; Schema: rawdata_msk; Owner: -
 --
 
@@ -845,7 +941,7 @@ CREATE TABLE rawdata_msk.chronic (
 
 
 --
--- TOC entry 254 (class 1259 OID 98514)
+-- TOC entry 256 (class 1259 OID 98514)
 -- Name: drug; Type: TABLE; Schema: rawdata_msk; Owner: -
 --
 
@@ -867,7 +963,7 @@ CREATE TABLE rawdata_msk.drug (
 
 
 --
--- TOC entry 255 (class 1259 OID 98517)
+-- TOC entry 257 (class 1259 OID 98517)
 -- Name: drugallergy; Type: TABLE; Schema: rawdata_msk; Owner: -
 --
 
@@ -887,7 +983,7 @@ CREATE TABLE rawdata_msk.drugallergy (
 
 
 --
--- TOC entry 256 (class 1259 OID 98520)
+-- TOC entry 258 (class 1259 OID 98520)
 -- Name: ipd; Type: TABLE; Schema: rawdata_msk; Owner: -
 --
 
@@ -909,7 +1005,7 @@ CREATE TABLE rawdata_msk.ipd (
 
 
 --
--- TOC entry 257 (class 1259 OID 98524)
+-- TOC entry 259 (class 1259 OID 98524)
 -- Name: ipdx; Type: TABLE; Schema: rawdata_msk; Owner: -
 --
 
@@ -925,7 +1021,7 @@ CREATE TABLE rawdata_msk.ipdx (
 
 
 --
--- TOC entry 258 (class 1259 OID 98527)
+-- TOC entry 260 (class 1259 OID 98527)
 -- Name: ipop; Type: TABLE; Schema: rawdata_msk; Owner: -
 --
 
@@ -945,7 +1041,7 @@ CREATE TABLE rawdata_msk.ipop (
 
 
 --
--- TOC entry 259 (class 1259 OID 98530)
+-- TOC entry 261 (class 1259 OID 98530)
 -- Name: lab; Type: TABLE; Schema: rawdata_msk; Owner: -
 --
 
@@ -961,7 +1057,7 @@ CREATE TABLE rawdata_msk.lab (
 
 
 --
--- TOC entry 260 (class 1259 OID 98533)
+-- TOC entry 262 (class 1259 OID 98533)
 -- Name: opd; Type: TABLE; Schema: rawdata_msk; Owner: -
 --
 
@@ -990,7 +1086,7 @@ CREATE TABLE rawdata_msk.opd (
 
 
 --
--- TOC entry 261 (class 1259 OID 98538)
+-- TOC entry 263 (class 1259 OID 98538)
 -- Name: opdx; Type: TABLE; Schema: rawdata_msk; Owner: -
 --
 
@@ -1007,7 +1103,7 @@ CREATE TABLE rawdata_msk.opdx (
 
 
 --
--- TOC entry 262 (class 1259 OID 98541)
+-- TOC entry 264 (class 1259 OID 98541)
 -- Name: opop; Type: TABLE; Schema: rawdata_msk; Owner: -
 --
 
@@ -1024,7 +1120,7 @@ CREATE TABLE rawdata_msk.opop (
 
 
 --
--- TOC entry 263 (class 1259 OID 98545)
+-- TOC entry 265 (class 1259 OID 98545)
 -- Name: person; Type: TABLE; Schema: rawdata_msk; Owner: -
 --
 
@@ -1051,7 +1147,7 @@ CREATE TABLE rawdata_msk.person (
 
 
 --
--- TOC entry 264 (class 1259 OID 98593)
+-- TOC entry 266 (class 1259 OID 98593)
 -- Name: appoint; Type: TABLE; Schema: rawdata_roiet; Owner: -
 --
 
@@ -1069,7 +1165,7 @@ CREATE TABLE rawdata_roiet.appoint (
 
 
 --
--- TOC entry 265 (class 1259 OID 98596)
+-- TOC entry 267 (class 1259 OID 98596)
 -- Name: chronic; Type: TABLE; Schema: rawdata_roiet; Owner: -
 --
 
@@ -1086,7 +1182,7 @@ CREATE TABLE rawdata_roiet.chronic (
 
 
 --
--- TOC entry 266 (class 1259 OID 98599)
+-- TOC entry 268 (class 1259 OID 98599)
 -- Name: drug; Type: TABLE; Schema: rawdata_roiet; Owner: -
 --
 
@@ -1108,7 +1204,7 @@ CREATE TABLE rawdata_roiet.drug (
 
 
 --
--- TOC entry 267 (class 1259 OID 98602)
+-- TOC entry 269 (class 1259 OID 98602)
 -- Name: drugallergy; Type: TABLE; Schema: rawdata_roiet; Owner: -
 --
 
@@ -1128,7 +1224,7 @@ CREATE TABLE rawdata_roiet.drugallergy (
 
 
 --
--- TOC entry 268 (class 1259 OID 98605)
+-- TOC entry 270 (class 1259 OID 98605)
 -- Name: ipd; Type: TABLE; Schema: rawdata_roiet; Owner: -
 --
 
@@ -1150,7 +1246,7 @@ CREATE TABLE rawdata_roiet.ipd (
 
 
 --
--- TOC entry 269 (class 1259 OID 98609)
+-- TOC entry 271 (class 1259 OID 98609)
 -- Name: ipdx; Type: TABLE; Schema: rawdata_roiet; Owner: -
 --
 
@@ -1166,7 +1262,7 @@ CREATE TABLE rawdata_roiet.ipdx (
 
 
 --
--- TOC entry 270 (class 1259 OID 98612)
+-- TOC entry 272 (class 1259 OID 98612)
 -- Name: ipop; Type: TABLE; Schema: rawdata_roiet; Owner: -
 --
 
@@ -1186,7 +1282,7 @@ CREATE TABLE rawdata_roiet.ipop (
 
 
 --
--- TOC entry 271 (class 1259 OID 98615)
+-- TOC entry 273 (class 1259 OID 98615)
 -- Name: lab; Type: TABLE; Schema: rawdata_roiet; Owner: -
 --
 
@@ -1202,7 +1298,7 @@ CREATE TABLE rawdata_roiet.lab (
 
 
 --
--- TOC entry 272 (class 1259 OID 98618)
+-- TOC entry 274 (class 1259 OID 98618)
 -- Name: opd; Type: TABLE; Schema: rawdata_roiet; Owner: -
 --
 
@@ -1231,7 +1327,7 @@ CREATE TABLE rawdata_roiet.opd (
 
 
 --
--- TOC entry 273 (class 1259 OID 98623)
+-- TOC entry 275 (class 1259 OID 98623)
 -- Name: opdx; Type: TABLE; Schema: rawdata_roiet; Owner: -
 --
 
@@ -1248,7 +1344,7 @@ CREATE TABLE rawdata_roiet.opdx (
 
 
 --
--- TOC entry 274 (class 1259 OID 98626)
+-- TOC entry 276 (class 1259 OID 98626)
 -- Name: opop; Type: TABLE; Schema: rawdata_roiet; Owner: -
 --
 
@@ -1265,7 +1361,7 @@ CREATE TABLE rawdata_roiet.opop (
 
 
 --
--- TOC entry 275 (class 1259 OID 98630)
+-- TOC entry 277 (class 1259 OID 98630)
 -- Name: person; Type: TABLE; Schema: rawdata_roiet; Owner: -
 --
 
@@ -1292,7 +1388,7 @@ CREATE TABLE rawdata_roiet.person (
 
 
 --
--- TOC entry 221 (class 1259 OID 41108)
+-- TOC entry 223 (class 1259 OID 41108)
 -- Name: admin; Type: TABLE; Schema: users; Owner: -
 --
 
@@ -1305,7 +1401,7 @@ CREATE TABLE users.admin (
 
 
 --
--- TOC entry 220 (class 1259 OID 41100)
+-- TOC entry 222 (class 1259 OID 41100)
 -- Name: hospitals; Type: TABLE; Schema: users; Owner: -
 --
 
@@ -1319,7 +1415,21 @@ CREATE TABLE users.hospitals (
 
 
 --
--- TOC entry 223 (class 1259 OID 65655)
+-- TOC entry 295 (class 1259 OID 115205)
+-- Name: platforms; Type: TABLE; Schema: users; Owner: -
+--
+
+CREATE TABLE users.platforms (
+    id uuid DEFAULT gen_random_uuid() NOT NULL,
+    platform_name character varying(255),
+    login_endpoint character varying(255),
+    refresh_endpoint character varying(255),
+    description character varying(255)
+);
+
+
+--
+-- TOC entry 225 (class 1259 OID 65655)
 -- Name: tokens; Type: TABLE; Schema: users; Owner: -
 --
 
@@ -1334,7 +1444,23 @@ CREATE TABLE users.tokens (
 
 
 --
--- TOC entry 219 (class 1259 OID 41088)
+-- TOC entry 294 (class 1259 OID 115189)
+-- Name: user_platforms; Type: TABLE; Schema: users; Owner: -
+--
+
+CREATE TABLE users.user_platforms (
+    id uuid DEFAULT gen_random_uuid() NOT NULL,
+    user_id uuid NOT NULL,
+    name character varying(150) NOT NULL,
+    api_key character varying(250),
+    created_at timestamp without time zone DEFAULT now(),
+    updated_at timestamp without time zone,
+    platform_id uuid NOT NULL
+);
+
+
+--
+-- TOC entry 221 (class 1259 OID 41088)
 -- Name: users; Type: TABLE; Schema: users; Owner: -
 --
 
@@ -1353,7 +1479,7 @@ CREATE TABLE users.users (
 
 
 --
--- TOC entry 222 (class 1259 OID 49279)
+-- TOC entry 224 (class 1259 OID 49279)
 -- Name: zones; Type: TABLE; Schema: users; Owner: -
 --
 
@@ -1366,24 +1492,24 @@ CREATE TABLE users.zones (
 
 
 --
--- TOC entry 3853 (class 0 OID 73996)
--- Dependencies: 229
+-- TOC entry 3905 (class 0 OID 73996)
+-- Dependencies: 231
 -- Data for Name: clinic_mappings; Type: TABLE DATA; Schema: libs; Owner: -
 --
 
 
 
 --
--- TOC entry 3852 (class 0 OID 73986)
--- Dependencies: 228
+-- TOC entry 3904 (class 0 OID 73986)
+-- Dependencies: 230
 -- Data for Name: clinics; Type: TABLE DATA; Schema: libs; Owner: -
 --
 
 
 
 --
--- TOC entry 3850 (class 0 OID 73960)
--- Dependencies: 226
+-- TOC entry 3902 (class 0 OID 73960)
+-- Dependencies: 228
 -- Data for Name: drug_mappings; Type: TABLE DATA; Schema: libs; Owner: -
 --
 
@@ -1394,8 +1520,8 @@ INSERT INTO libs.drug_mappings VALUES ('1002', '89999', '99999', NULL, '11053', 
 
 
 --
--- TOC entry 3854 (class 0 OID 74001)
--- Dependencies: 230
+-- TOC entry 3906 (class 0 OID 74001)
+-- Dependencies: 232
 -- Data for Name: drug_usages; Type: TABLE DATA; Schema: libs; Owner: -
 --
 
@@ -1404,8 +1530,8 @@ INSERT INTO libs.drug_usages VALUES ('11053', '1122', 'erwer', 'c2c58946-2345-4f
 
 
 --
--- TOC entry 3848 (class 0 OID 73944)
--- Dependencies: 224
+-- TOC entry 3900 (class 0 OID 73944)
+-- Dependencies: 226
 -- Data for Name: drugs; Type: TABLE DATA; Schema: libs; Owner: -
 --
 
@@ -1416,24 +1542,24 @@ INSERT INTO libs.drugs VALUES ('1002', 'ยีเรียครีม 0.5', '11
 
 
 --
--- TOC entry 3851 (class 0 OID 73981)
--- Dependencies: 227
+-- TOC entry 3903 (class 0 OID 73981)
+-- Dependencies: 229
 -- Data for Name: insurance_mappings; Type: TABLE DATA; Schema: libs; Owner: -
 --
 
 
 
 --
--- TOC entry 3849 (class 0 OID 73953)
--- Dependencies: 225
+-- TOC entry 3901 (class 0 OID 73953)
+-- Dependencies: 227
 -- Data for Name: insurances; Type: TABLE DATA; Schema: libs; Owner: -
 --
 
 
 
 --
--- TOC entry 3856 (class 0 OID 74028)
--- Dependencies: 232
+-- TOC entry 3908 (class 0 OID 74028)
+-- Dependencies: 234
 -- Data for Name: lab_groups; Type: TABLE DATA; Schema: libs; Owner: -
 --
 
@@ -1443,8 +1569,8 @@ INSERT INTO libs.lab_groups VALUES ('11053', '5002', 'ANC', '2023-02-06 09:50:53
 
 
 --
--- TOC entry 3863 (class 0 OID 82070)
--- Dependencies: 239
+-- TOC entry 3915 (class 0 OID 82070)
+-- Dependencies: 241
 -- Data for Name: lab_mappings; Type: TABLE DATA; Schema: libs; Owner: -
 --
 
@@ -1454,8 +1580,8 @@ INSERT INTO libs.lab_mappings VALUES ('xxxxx', '11053', '5465464', '556465464', 
 
 
 --
--- TOC entry 3855 (class 0 OID 74021)
--- Dependencies: 231
+-- TOC entry 3907 (class 0 OID 74021)
+-- Dependencies: 233
 -- Data for Name: labs; Type: TABLE DATA; Schema: libs; Owner: -
 --
 
@@ -1464,460 +1590,503 @@ INSERT INTO libs.labs VALUES ('11053', '1002', 'FBS', 'c2c58946-2345-4fbd-8f3f-2
 
 
 --
--- TOC entry 3860 (class 0 OID 74054)
--- Dependencies: 236
+-- TOC entry 3912 (class 0 OID 74054)
+-- Dependencies: 238
 -- Data for Name: nation_mappings; Type: TABLE DATA; Schema: libs; Owner: -
 --
 
 
 
 --
--- TOC entry 3859 (class 0 OID 74047)
--- Dependencies: 235
+-- TOC entry 3911 (class 0 OID 74047)
+-- Dependencies: 237
 -- Data for Name: nations; Type: TABLE DATA; Schema: libs; Owner: -
 --
 
 
 
 --
--- TOC entry 3858 (class 0 OID 74042)
--- Dependencies: 234
+-- TOC entry 3910 (class 0 OID 74042)
+-- Dependencies: 236
 -- Data for Name: occupation_mappings; Type: TABLE DATA; Schema: libs; Owner: -
 --
 
 
 
 --
--- TOC entry 3857 (class 0 OID 74035)
--- Dependencies: 233
+-- TOC entry 3909 (class 0 OID 74035)
+-- Dependencies: 235
 -- Data for Name: occupations; Type: TABLE DATA; Schema: libs; Owner: -
 --
 
 
 
 --
--- TOC entry 3861 (class 0 OID 74059)
--- Dependencies: 237
+-- TOC entry 3913 (class 0 OID 74059)
+-- Dependencies: 239
 -- Data for Name: providers; Type: TABLE DATA; Schema: libs; Owner: -
 --
 
 
 
 --
--- TOC entry 3862 (class 0 OID 74064)
--- Dependencies: 238
+-- TOC entry 3914 (class 0 OID 74064)
+-- Dependencies: 240
 -- Data for Name: wards; Type: TABLE DATA; Schema: libs; Owner: -
 --
 
 
 
 --
--- TOC entry 3864 (class 0 OID 98426)
--- Dependencies: 240
+-- TOC entry 3966 (class 0 OID 107157)
+-- Dependencies: 292
+-- Data for Name: transactions; Type: TABLE DATA; Schema: logs; Owner: -
+--
+
+
+
+--
+-- TOC entry 3967 (class 0 OID 107181)
+-- Dependencies: 293
+-- Data for Name: ipd; Type: TABLE DATA; Schema: metadata; Owner: -
+--
+
+
+
+--
+-- TOC entry 3965 (class 0 OID 107150)
+-- Dependencies: 291
+-- Data for Name: opd; Type: TABLE DATA; Schema: metadata; Owner: -
+--
+
+
+
+--
+-- TOC entry 3964 (class 0 OID 107140)
+-- Dependencies: 290
+-- Data for Name: person; Type: TABLE DATA; Schema: metadata; Owner: -
+--
+
+
+
+--
+-- TOC entry 3916 (class 0 OID 98426)
+-- Dependencies: 242
 -- Data for Name: appoint; Type: TABLE DATA; Schema: rawdata_kk; Owner: -
 --
 
 
 
 --
--- TOC entry 3865 (class 0 OID 98429)
--- Dependencies: 241
+-- TOC entry 3917 (class 0 OID 98429)
+-- Dependencies: 243
 -- Data for Name: chronic; Type: TABLE DATA; Schema: rawdata_kk; Owner: -
 --
 
 
 
 --
--- TOC entry 3866 (class 0 OID 98432)
--- Dependencies: 242
+-- TOC entry 3918 (class 0 OID 98432)
+-- Dependencies: 244
 -- Data for Name: drug; Type: TABLE DATA; Schema: rawdata_kk; Owner: -
 --
 
 
 
 --
--- TOC entry 3867 (class 0 OID 98435)
--- Dependencies: 243
+-- TOC entry 3919 (class 0 OID 98435)
+-- Dependencies: 245
 -- Data for Name: drugallergy; Type: TABLE DATA; Schema: rawdata_kk; Owner: -
 --
 
 
 
 --
--- TOC entry 3868 (class 0 OID 98438)
--- Dependencies: 244
+-- TOC entry 3920 (class 0 OID 98438)
+-- Dependencies: 246
 -- Data for Name: ipd; Type: TABLE DATA; Schema: rawdata_kk; Owner: -
 --
 
 
 
 --
--- TOC entry 3869 (class 0 OID 98442)
--- Dependencies: 245
+-- TOC entry 3921 (class 0 OID 98442)
+-- Dependencies: 247
 -- Data for Name: ipdx; Type: TABLE DATA; Schema: rawdata_kk; Owner: -
 --
 
 
 
 --
--- TOC entry 3870 (class 0 OID 98445)
--- Dependencies: 246
+-- TOC entry 3922 (class 0 OID 98445)
+-- Dependencies: 248
 -- Data for Name: ipop; Type: TABLE DATA; Schema: rawdata_kk; Owner: -
 --
 
 
 
 --
--- TOC entry 3871 (class 0 OID 98448)
--- Dependencies: 247
+-- TOC entry 3923 (class 0 OID 98448)
+-- Dependencies: 249
 -- Data for Name: lab; Type: TABLE DATA; Schema: rawdata_kk; Owner: -
 --
 
 
 
 --
--- TOC entry 3872 (class 0 OID 98451)
--- Dependencies: 248
+-- TOC entry 3924 (class 0 OID 98451)
+-- Dependencies: 250
 -- Data for Name: opd; Type: TABLE DATA; Schema: rawdata_kk; Owner: -
 --
 
 
 
 --
--- TOC entry 3873 (class 0 OID 98456)
--- Dependencies: 249
+-- TOC entry 3925 (class 0 OID 98456)
+-- Dependencies: 251
 -- Data for Name: opdx; Type: TABLE DATA; Schema: rawdata_kk; Owner: -
 --
 
 
 
 --
--- TOC entry 3874 (class 0 OID 98459)
--- Dependencies: 250
+-- TOC entry 3926 (class 0 OID 98459)
+-- Dependencies: 252
 -- Data for Name: opop; Type: TABLE DATA; Schema: rawdata_kk; Owner: -
 --
 
 
 
 --
--- TOC entry 3875 (class 0 OID 98463)
--- Dependencies: 251
+-- TOC entry 3927 (class 0 OID 98463)
+-- Dependencies: 253
 -- Data for Name: person; Type: TABLE DATA; Schema: rawdata_kk; Owner: -
 --
 
 
 
 --
--- TOC entry 3900 (class 0 OID 98679)
--- Dependencies: 276
+-- TOC entry 3952 (class 0 OID 98679)
+-- Dependencies: 278
 -- Data for Name: appoint; Type: TABLE DATA; Schema: rawdata_kls; Owner: -
 --
 
 
 
 --
--- TOC entry 3901 (class 0 OID 98682)
--- Dependencies: 277
+-- TOC entry 3953 (class 0 OID 98682)
+-- Dependencies: 279
 -- Data for Name: chronic; Type: TABLE DATA; Schema: rawdata_kls; Owner: -
 --
 
 
 
 --
--- TOC entry 3902 (class 0 OID 98685)
--- Dependencies: 278
+-- TOC entry 3954 (class 0 OID 98685)
+-- Dependencies: 280
 -- Data for Name: drug; Type: TABLE DATA; Schema: rawdata_kls; Owner: -
 --
 
 
 
 --
--- TOC entry 3903 (class 0 OID 98688)
--- Dependencies: 279
+-- TOC entry 3955 (class 0 OID 98688)
+-- Dependencies: 281
 -- Data for Name: drugallergy; Type: TABLE DATA; Schema: rawdata_kls; Owner: -
 --
 
 
 
 --
--- TOC entry 3904 (class 0 OID 98691)
--- Dependencies: 280
+-- TOC entry 3956 (class 0 OID 98691)
+-- Dependencies: 282
 -- Data for Name: ipd; Type: TABLE DATA; Schema: rawdata_kls; Owner: -
 --
 
 
 
 --
--- TOC entry 3905 (class 0 OID 98695)
--- Dependencies: 281
+-- TOC entry 3957 (class 0 OID 98695)
+-- Dependencies: 283
 -- Data for Name: ipdx; Type: TABLE DATA; Schema: rawdata_kls; Owner: -
 --
 
 
 
 --
--- TOC entry 3906 (class 0 OID 98698)
--- Dependencies: 282
+-- TOC entry 3958 (class 0 OID 98698)
+-- Dependencies: 284
 -- Data for Name: ipop; Type: TABLE DATA; Schema: rawdata_kls; Owner: -
 --
 
 
 
 --
--- TOC entry 3907 (class 0 OID 98701)
--- Dependencies: 283
+-- TOC entry 3959 (class 0 OID 98701)
+-- Dependencies: 285
 -- Data for Name: lab; Type: TABLE DATA; Schema: rawdata_kls; Owner: -
 --
 
 
 
 --
--- TOC entry 3908 (class 0 OID 98704)
--- Dependencies: 284
+-- TOC entry 3960 (class 0 OID 98704)
+-- Dependencies: 286
 -- Data for Name: opd; Type: TABLE DATA; Schema: rawdata_kls; Owner: -
 --
 
 
 
 --
--- TOC entry 3909 (class 0 OID 98709)
--- Dependencies: 285
+-- TOC entry 3961 (class 0 OID 98709)
+-- Dependencies: 287
 -- Data for Name: opdx; Type: TABLE DATA; Schema: rawdata_kls; Owner: -
 --
 
 
 
 --
--- TOC entry 3910 (class 0 OID 98712)
--- Dependencies: 286
+-- TOC entry 3962 (class 0 OID 98712)
+-- Dependencies: 288
 -- Data for Name: opop; Type: TABLE DATA; Schema: rawdata_kls; Owner: -
 --
 
 
 
 --
--- TOC entry 3911 (class 0 OID 98716)
--- Dependencies: 287
+-- TOC entry 3963 (class 0 OID 98716)
+-- Dependencies: 289
 -- Data for Name: person; Type: TABLE DATA; Schema: rawdata_kls; Owner: -
 --
 
 
 
 --
--- TOC entry 3876 (class 0 OID 98508)
--- Dependencies: 252
+-- TOC entry 3928 (class 0 OID 98508)
+-- Dependencies: 254
 -- Data for Name: appoint; Type: TABLE DATA; Schema: rawdata_msk; Owner: -
 --
 
 
 
 --
--- TOC entry 3877 (class 0 OID 98511)
--- Dependencies: 253
+-- TOC entry 3929 (class 0 OID 98511)
+-- Dependencies: 255
 -- Data for Name: chronic; Type: TABLE DATA; Schema: rawdata_msk; Owner: -
 --
 
 
 
 --
--- TOC entry 3878 (class 0 OID 98514)
--- Dependencies: 254
+-- TOC entry 3930 (class 0 OID 98514)
+-- Dependencies: 256
 -- Data for Name: drug; Type: TABLE DATA; Schema: rawdata_msk; Owner: -
 --
 
 
 
 --
--- TOC entry 3879 (class 0 OID 98517)
--- Dependencies: 255
+-- TOC entry 3931 (class 0 OID 98517)
+-- Dependencies: 257
 -- Data for Name: drugallergy; Type: TABLE DATA; Schema: rawdata_msk; Owner: -
 --
 
 
 
 --
--- TOC entry 3880 (class 0 OID 98520)
--- Dependencies: 256
+-- TOC entry 3932 (class 0 OID 98520)
+-- Dependencies: 258
 -- Data for Name: ipd; Type: TABLE DATA; Schema: rawdata_msk; Owner: -
 --
 
 
 
 --
--- TOC entry 3881 (class 0 OID 98524)
--- Dependencies: 257
+-- TOC entry 3933 (class 0 OID 98524)
+-- Dependencies: 259
 -- Data for Name: ipdx; Type: TABLE DATA; Schema: rawdata_msk; Owner: -
 --
 
 
 
 --
--- TOC entry 3882 (class 0 OID 98527)
--- Dependencies: 258
+-- TOC entry 3934 (class 0 OID 98527)
+-- Dependencies: 260
 -- Data for Name: ipop; Type: TABLE DATA; Schema: rawdata_msk; Owner: -
 --
 
 
 
 --
--- TOC entry 3883 (class 0 OID 98530)
--- Dependencies: 259
+-- TOC entry 3935 (class 0 OID 98530)
+-- Dependencies: 261
 -- Data for Name: lab; Type: TABLE DATA; Schema: rawdata_msk; Owner: -
 --
 
 
 
 --
--- TOC entry 3884 (class 0 OID 98533)
--- Dependencies: 260
+-- TOC entry 3936 (class 0 OID 98533)
+-- Dependencies: 262
 -- Data for Name: opd; Type: TABLE DATA; Schema: rawdata_msk; Owner: -
 --
 
 
 
 --
--- TOC entry 3885 (class 0 OID 98538)
--- Dependencies: 261
+-- TOC entry 3937 (class 0 OID 98538)
+-- Dependencies: 263
 -- Data for Name: opdx; Type: TABLE DATA; Schema: rawdata_msk; Owner: -
 --
 
 
 
 --
--- TOC entry 3886 (class 0 OID 98541)
--- Dependencies: 262
+-- TOC entry 3938 (class 0 OID 98541)
+-- Dependencies: 264
 -- Data for Name: opop; Type: TABLE DATA; Schema: rawdata_msk; Owner: -
 --
 
 
 
 --
--- TOC entry 3887 (class 0 OID 98545)
--- Dependencies: 263
+-- TOC entry 3939 (class 0 OID 98545)
+-- Dependencies: 265
 -- Data for Name: person; Type: TABLE DATA; Schema: rawdata_msk; Owner: -
 --
 
 
 
 --
--- TOC entry 3888 (class 0 OID 98593)
--- Dependencies: 264
+-- TOC entry 3940 (class 0 OID 98593)
+-- Dependencies: 266
 -- Data for Name: appoint; Type: TABLE DATA; Schema: rawdata_roiet; Owner: -
 --
 
 
 
 --
--- TOC entry 3889 (class 0 OID 98596)
--- Dependencies: 265
+-- TOC entry 3941 (class 0 OID 98596)
+-- Dependencies: 267
 -- Data for Name: chronic; Type: TABLE DATA; Schema: rawdata_roiet; Owner: -
 --
 
 
 
 --
--- TOC entry 3890 (class 0 OID 98599)
--- Dependencies: 266
+-- TOC entry 3942 (class 0 OID 98599)
+-- Dependencies: 268
 -- Data for Name: drug; Type: TABLE DATA; Schema: rawdata_roiet; Owner: -
 --
 
 
 
 --
--- TOC entry 3891 (class 0 OID 98602)
--- Dependencies: 267
+-- TOC entry 3943 (class 0 OID 98602)
+-- Dependencies: 269
 -- Data for Name: drugallergy; Type: TABLE DATA; Schema: rawdata_roiet; Owner: -
 --
 
 
 
 --
--- TOC entry 3892 (class 0 OID 98605)
--- Dependencies: 268
+-- TOC entry 3944 (class 0 OID 98605)
+-- Dependencies: 270
 -- Data for Name: ipd; Type: TABLE DATA; Schema: rawdata_roiet; Owner: -
 --
 
 
 
 --
--- TOC entry 3893 (class 0 OID 98609)
--- Dependencies: 269
+-- TOC entry 3945 (class 0 OID 98609)
+-- Dependencies: 271
 -- Data for Name: ipdx; Type: TABLE DATA; Schema: rawdata_roiet; Owner: -
 --
 
 
 
 --
--- TOC entry 3894 (class 0 OID 98612)
--- Dependencies: 270
+-- TOC entry 3946 (class 0 OID 98612)
+-- Dependencies: 272
 -- Data for Name: ipop; Type: TABLE DATA; Schema: rawdata_roiet; Owner: -
 --
 
 
 
 --
--- TOC entry 3895 (class 0 OID 98615)
--- Dependencies: 271
+-- TOC entry 3947 (class 0 OID 98615)
+-- Dependencies: 273
 -- Data for Name: lab; Type: TABLE DATA; Schema: rawdata_roiet; Owner: -
 --
 
 
 
 --
--- TOC entry 3896 (class 0 OID 98618)
--- Dependencies: 272
+-- TOC entry 3948 (class 0 OID 98618)
+-- Dependencies: 274
 -- Data for Name: opd; Type: TABLE DATA; Schema: rawdata_roiet; Owner: -
 --
 
 
 
 --
--- TOC entry 3897 (class 0 OID 98623)
--- Dependencies: 273
+-- TOC entry 3949 (class 0 OID 98623)
+-- Dependencies: 275
 -- Data for Name: opdx; Type: TABLE DATA; Schema: rawdata_roiet; Owner: -
 --
 
 
 
 --
--- TOC entry 3898 (class 0 OID 98626)
--- Dependencies: 274
+-- TOC entry 3950 (class 0 OID 98626)
+-- Dependencies: 276
 -- Data for Name: opop; Type: TABLE DATA; Schema: rawdata_roiet; Owner: -
 --
 
 
 
 --
--- TOC entry 3899 (class 0 OID 98630)
--- Dependencies: 275
+-- TOC entry 3951 (class 0 OID 98630)
+-- Dependencies: 277
 -- Data for Name: person; Type: TABLE DATA; Schema: rawdata_roiet; Owner: -
 --
 
 
 
 --
--- TOC entry 3845 (class 0 OID 41108)
--- Dependencies: 221
+-- TOC entry 3897 (class 0 OID 41108)
+-- Dependencies: 223
 -- Data for Name: admin; Type: TABLE DATA; Schema: users; Owner: -
 --
 
-INSERT INTO users.admin VALUES ('37749a01-8c93-44ee-9051-8ece2401427c', 'admin', '$2b$10$WKhyp0uCK7SvrX.sQJg9IOPEwPKq7gz9PkfmQmWGLJknaAQ0w7wN.', true);
+INSERT INTO users.admin VALUES ('37749a01-8c93-44ee-9051-8ece2401427c', 'admin', '$2b$10$2NmnJDrUYza5xBRgF7CR/.Oi8xJe3eZyO1seQFrE1460zg58qvjyO', true);
 
 
 --
--- TOC entry 3844 (class 0 OID 41100)
--- Dependencies: 220
+-- TOC entry 3896 (class 0 OID 41100)
+-- Dependencies: 222
 -- Data for Name: hospitals; Type: TABLE DATA; Schema: users; Owner: -
 --
 
 INSERT INTO users.hospitals VALUES ('10707', 'รพท.มหาสารคาม', '4400', true, false);
-INSERT INTO users.hospitals VALUES ('11111', 'xxxxxxxxxxxxx', '4000', true, false);
 INSERT INTO users.hospitals VALUES ('11053', ' รพช.กันทรวิชัย', '4400', true, false);
+INSERT INTO users.hospitals VALUES ('11111', 'xxxxxxxxxxxxx', '4000', true, false);
+INSERT INTO users.hospitals VALUES ('11054', 'รพช.เชียงยืน', '4400', true, false);
 
 
 --
--- TOC entry 3847 (class 0 OID 65655)
--- Dependencies: 223
+-- TOC entry 3969 (class 0 OID 115205)
+-- Dependencies: 295
+-- Data for Name: platforms; Type: TABLE DATA; Schema: users; Owner: -
+--
+
+INSERT INTO users.platforms VALUES ('137e6fe0-cc02-4594-9491-c2d023df5456', 'R7 Platform', 'http://localhost:3001/login', 'http://localhost:3001/refresh_token', 'แพลตฟอร์มกลางเขตสุขภาพที่ 7');
+INSERT INTO users.platforms VALUES ('b2cd329a-c636-4b1f-a368-253a40a41912', 'N-Refer', 'http://localhost:3001/login', 'http://localhost:3001/refresh_token', 'ระบบ N Refer');
+
+
+--
+-- TOC entry 3899 (class 0 OID 65655)
+-- Dependencies: 225
 -- Data for Name: tokens; Type: TABLE DATA; Schema: users; Owner: -
 --
 
@@ -1982,11 +2151,124 @@ INSERT INTO users.tokens VALUES ('c2c58946-2345-4fbd-8f3f-2875deb93c7f', 'xmwycJ
 INSERT INTO users.tokens VALUES ('c2c58946-2345-4fbd-8f3f-2875deb93c7f', 'D5eUfB60o5HirgyXsTUfzPROOf6cUhKcSWn9mnQ4HKnkKFgct9vZO42M0n85xu7O', '2023-03-07 09:33:26.632193', '2023-02-05 09:33:26.632193+07', 'MAHASARAKHAM', '11053');
 INSERT INTO users.tokens VALUES ('c2c58946-2345-4fbd-8f3f-2875deb93c7f', '8zeFq2NS2sdWtcpxi1uNwrySzsSmSImQz4eLR0h4j8DxmUwHVNlRzsc8nICCTYyU', '2023-03-07 10:13:39.986349', '2023-02-05 10:13:39.986349+07', 'MAHASARAKHAM', '11053');
 INSERT INTO users.tokens VALUES ('c2c58946-2345-4fbd-8f3f-2875deb93c7f', 'Ecu0Hl4XSXaTa8kVRfqdhfF0km5giN3ysJ3TN77C118NYj46SwDKhx1lD6endp0B', '2023-03-08 09:46:05.207835', '2023-02-06 09:46:05.207835+07', 'MAHASARAKHAM', '11053');
+INSERT INTO users.tokens VALUES ('c2c58946-2345-4fbd-8f3f-2875deb93c7f', 'hEhu6nX4s0yZbSkJd4PdByGZT1Yyu7wedkUASbTK8AS8Awa0QExcwR5wACBKIQnM', '2023-03-10 09:36:18.927129', '2023-02-08 09:36:18.927129+07', 'MAHASARAKHAM', '11053');
+INSERT INTO users.tokens VALUES ('c2c58946-2345-4fbd-8f3f-2875deb93c7f', '6LkEbUw7YMBpfjJ2zBMtJ2FrRNNw76lbXS8WtDY83cfWoSk3XjLO917Xo5j7223l', '2023-03-10 09:51:59.556501', '2023-02-08 09:51:59.556501+07', 'MAHASARAKHAM', '11053');
+INSERT INTO users.tokens VALUES ('c2c58946-2345-4fbd-8f3f-2875deb93c7f', 'vrhK1sfic4Xue8C4pBtev7GFWQygiwMUMsu77WHWBIwhNkD4slyNyOBv5win0Jsb', '2023-03-10 18:01:51.124602', '2023-02-08 18:01:51.124602+07', 'MAHASARAKHAM', '11053');
+INSERT INTO users.tokens VALUES ('c2c58946-2345-4fbd-8f3f-2875deb93c7f', 'meUknkMHFtsdEJzMws1LnaZ79prLdcNvLGgftFG2aD6lj7vSvMB4oaqZA6rZqVVJ', '2023-03-10 18:19:55.678436', '2023-02-08 18:19:55.678436+07', 'MAHASARAKHAM', '11053');
+INSERT INTO users.tokens VALUES ('c2c58946-2345-4fbd-8f3f-2875deb93c7f', 'PRxWU5fDQQcbCzoQDHKfzJwZtp0RmoEDM1rxliaNyYrl5WcvPshmkagR5nr08opr', '2023-03-10 19:02:05.862966', '2023-02-08 19:02:05.862966+07', 'MAHASARAKHAM', '11053');
+INSERT INTO users.tokens VALUES ('c2c58946-2345-4fbd-8f3f-2875deb93c7f', 'da2D92FuJQRvhBtEbY5lwM27QKJV4tiMb0BpRaz5je8XG5nr3delyMHF1ugrAAfy', '2023-03-10 19:10:24.703164', '2023-02-08 19:10:24.703164+07', 'MAHASARAKHAM', '11053');
+INSERT INTO users.tokens VALUES ('c2c58946-2345-4fbd-8f3f-2875deb93c7f', '2UZlx10exZAWVimNAs7MuAWmPv2zNkL68CpuOKTWxRk7uzmqMJIdRwBDJYxLZtPe', '2023-03-10 19:18:21.097182', '2023-02-08 19:18:21.097182+07', 'MAHASARAKHAM', '11053');
+INSERT INTO users.tokens VALUES ('c2c58946-2345-4fbd-8f3f-2875deb93c7f', 'AXTFQgH371P0jdShC8uUr9r5VvMdUMZyiAZY4Ch2oI63h464BnxZtTUrWVCruKLR', '2023-03-10 19:45:13.894152', '2023-02-08 19:45:13.894152+07', 'MAHASARAKHAM', '11053');
+INSERT INTO users.tokens VALUES ('c2c58946-2345-4fbd-8f3f-2875deb93c7f', 'XlTvin0QNI7vz6knsYWl5kYc55G0U6nCxFA6XeggwEHz7i71hUFIES4cs3ncc26M', '2023-03-10 21:34:14.874338', '2023-02-08 21:34:14.874338+07', 'MAHASARAKHAM', '11053');
+INSERT INTO users.tokens VALUES ('c2c58946-2345-4fbd-8f3f-2875deb93c7f', 'jMCVeMfS2txHpD9LW6PKDNyOt1ZFl2toNzdlOIK1DMNx4yaO0LAtumFLuEqv8C3Y', '2023-03-10 21:39:38.824985', '2023-02-08 21:39:38.824985+07', 'MAHASARAKHAM', '11053');
+INSERT INTO users.tokens VALUES ('c2c58946-2345-4fbd-8f3f-2875deb93c7f', '35AFBug5vhAcC8dwmvY1cEgYtoUUKn1ulRE8nnCBPry64XUUfTqJqX5TzaeN9vY1', '2023-03-10 21:57:46.994826', '2023-02-08 21:57:46.994826+07', 'MAHASARAKHAM', '11053');
+INSERT INTO users.tokens VALUES ('c2c58946-2345-4fbd-8f3f-2875deb93c7f', '9DsLeYQVXugFWq8GosgorZWBGUlkilWXRUDpB9zU2hQy7dYBPP94XXxXEm9xnT7t', '2023-03-10 22:21:49.913697', '2023-02-08 22:21:49.913697+07', 'MAHASARAKHAM', '11053');
+INSERT INTO users.tokens VALUES ('c2c58946-2345-4fbd-8f3f-2875deb93c7f', 'GjXdpPOb9kVT0VAEr5i7si3tLnhREIwsKm61knnUKZX47VwdCNVF665rp11DqqG7', '2023-03-10 22:23:56.196991', '2023-02-08 22:23:56.196991+07', 'MAHASARAKHAM', '11053');
+INSERT INTO users.tokens VALUES ('c2c58946-2345-4fbd-8f3f-2875deb93c7f', 'axcYwhqXg9i0XOKO4yqkqwrv3jg90Ukq8MKwnvnf0ZddJEnKezOPqw2b3fwvT8NR', '2023-03-10 22:28:54.490993', '2023-02-08 22:28:54.490993+07', 'MAHASARAKHAM', '11053');
+INSERT INTO users.tokens VALUES ('c2c58946-2345-4fbd-8f3f-2875deb93c7f', '7i2xO3ADmWeTOpd6Wyj335vgWHg7mldYsA44bsG6osBHeMXSRFvP6HlQurulcHm0', '2023-03-10 22:33:21.123192', '2023-02-08 22:33:21.123192+07', 'MAHASARAKHAM', '11053');
+INSERT INTO users.tokens VALUES ('c2c58946-2345-4fbd-8f3f-2875deb93c7f', 'P8WhLdiZp0Raf4aJB1AlMGFffxszZygrhAsf7RXVwRqG8Tnnr2v7J5F0rba4FybU', '2023-03-10 22:36:52.004861', '2023-02-08 22:36:52.004861+07', 'MAHASARAKHAM', '11053');
+INSERT INTO users.tokens VALUES ('c2c58946-2345-4fbd-8f3f-2875deb93c7f', 'TQHeAb713HzbR6ETjACEa3cNJOAHL8ZA42nlgf10beeP4aL6FWVddaSlOMmgSnlV', '2023-03-10 22:57:26.980464', '2023-02-08 22:57:26.980464+07', 'MAHASARAKHAM', '11053');
+INSERT INTO users.tokens VALUES ('c2c58946-2345-4fbd-8f3f-2875deb93c7f', 'zPnHn2el2qgUebUnCezK3dcTZQuhw6ZsGZZi4sFWdhDY1QAGtngWdpNNvGm66r7n', '2023-03-10 22:59:27.828367', '2023-02-08 22:59:27.828367+07', 'MAHASARAKHAM', '11053');
+INSERT INTO users.tokens VALUES ('c2c58946-2345-4fbd-8f3f-2875deb93c7f', '60kErTrElBtH44iS7KDP555R403I3mEskmtiyGYqiaStsodmCXCAD0jChOoWP1WO', '2023-03-11 10:44:12.206492', '2023-02-09 10:44:12.206492+07', 'MAHASARAKHAM', '11053');
+INSERT INTO users.tokens VALUES ('c2c58946-2345-4fbd-8f3f-2875deb93c7f', 'lAxRItbVHGaloXWxFO5IvbfFwgeR1mbM1DjqkX43xtlDBEtqiKT5PdOsfifxAOYf', '2023-03-11 12:09:51.798135', '2023-02-09 12:09:51.798135+07', 'MAHASARAKHAM', '11053');
+INSERT INTO users.tokens VALUES ('c2c58946-2345-4fbd-8f3f-2875deb93c7f', 'hBgCQFgMXXHQz7kOqKVLa4gKj0cntrZGLrMy4EasV20Ki6uebrB6RNm2htoZQNXf', '2023-03-11 15:28:03.716278', '2023-02-09 15:28:03.716278+07', 'MAHASARAKHAM', '11053');
+INSERT INTO users.tokens VALUES ('c2c58946-2345-4fbd-8f3f-2875deb93c7f', 'SQtbOX7ueLbUMNULjnWa5Yc3vmH57yL2l87b3fJ0atOef4NREMVV71FlejcJiwc5', '2023-03-11 19:32:15.105181', '2023-02-09 19:32:15.105181+07', 'MAHASARAKHAM', '11053');
+INSERT INTO users.tokens VALUES ('c2c58946-2345-4fbd-8f3f-2875deb93c7f', 'dO2sZqhOjIsVRC9fltZKuEwvuVMm9Lp3yIDzd2tGpPKlf8maIdlPJtCJn8RHLguA', '2023-03-12 09:23:46.260482', '2023-02-10 09:23:46.260482+07', 'MAHASARAKHAM', '11053');
+INSERT INTO users.tokens VALUES ('c2c58946-2345-4fbd-8f3f-2875deb93c7f', 'U4oZ5jNLB6yWTdus37e2Zx9AbwLbWN8hcDqZiqaW9geqUSGX5hJSnsmVO76G10rA', '2023-03-12 20:02:12.826556', '2023-02-10 20:02:12.826556+07', 'MAHASARAKHAM', '11053');
+INSERT INTO users.tokens VALUES ('c2c58946-2345-4fbd-8f3f-2875deb93c7f', 'zh1m5RsaNNg7YlWczPtzhlk0HQRMELBFL5PVYl85QmfmoA6y3Qx2HBYwglEOsNlq', '2023-03-13 08:02:04.280327', '2023-02-11 08:02:04.280327+07', 'MAHASARAKHAM', '11053');
+INSERT INTO users.tokens VALUES ('c2c58946-2345-4fbd-8f3f-2875deb93c7f', 'vL7U3HHsFcUGYCqlFeZefQOlipVff17wxUu1X0CJ3ZSAH4tg8YXNLx89bhnIBhsO', '2023-03-13 15:56:51.321492', '2023-02-11 15:56:51.321492+07', 'MAHASARAKHAM', '11053');
+INSERT INTO users.tokens VALUES ('c2c58946-2345-4fbd-8f3f-2875deb93c7f', 'xbHoIpiOjOmZJqmiq7yJzLzUk6GMN5RVy5msTU9ubLAyUuYzQYXbzu2yNzCX4NZN', '2023-03-13 18:46:52.187493', '2023-02-11 18:46:52.187493+07', 'MAHASARAKHAM', '11053');
+INSERT INTO users.tokens VALUES ('c2c58946-2345-4fbd-8f3f-2875deb93c7f', 'JdKJKIth74qpE0F12wdevNIdkptshQ8jIBqdvvgzzIjCTEjBdTupRs9XIAKDgC0T', '2023-03-13 18:48:42.699888', '2023-02-11 18:48:42.699888+07', 'MAHASARAKHAM', '11053');
+INSERT INTO users.tokens VALUES ('c2c58946-2345-4fbd-8f3f-2875deb93c7f', '9WcEtbe3f8ckManXtx1rd44g764A0pK3Vp0q3y4xUU08UnDIpu9OPPff6zHRnWvW', '2023-03-14 10:09:08.944785', '2023-02-12 10:09:08.944785+07', 'MAHASARAKHAM', '11053');
+INSERT INTO users.tokens VALUES ('c2c58946-2345-4fbd-8f3f-2875deb93c7f', 'a7fcgISgno0VQwGPxEVSfvD6SwpMnDSHbOhdPzThOlLoJ5CAwBl9hbCv78Ts2sfE', '2023-03-14 10:32:22.60076', '2023-02-12 10:32:22.60076+07', 'MAHASARAKHAM', '11053');
+INSERT INTO users.tokens VALUES ('c2c58946-2345-4fbd-8f3f-2875deb93c7f', 'WUFc3pFe4mNrCwVzxsNj6i071MtyrXt4rBJQTvNEjz28STzYSKmRZdHWNraDFQkD', '2023-03-14 21:21:51.481676', '2023-02-12 21:21:51.481676+07', 'MAHASARAKHAM', '11053');
+INSERT INTO users.tokens VALUES ('c2c58946-2345-4fbd-8f3f-2875deb93c7f', 'nLeaUEqlID2qCU4vkkLqIF1AlUi6Gk2KJrGroRsrWpTyvcgYKUxQzQhq4o4aKguh', '2023-03-15 09:07:38.932544', '2023-02-13 09:07:38.932544+07', 'MAHASARAKHAM', '11053');
+INSERT INTO users.tokens VALUES ('c2c58946-2345-4fbd-8f3f-2875deb93c7f', 'dPzUHE0hcdbHeproZtEptgdBruzJEt0ArfUIH7888D1yCdOlvQe3RZbexb2UimQp', '2023-03-15 09:32:35.984349', '2023-02-13 09:32:35.984349+07', 'MAHASARAKHAM', '11053');
+INSERT INTO users.tokens VALUES ('c2c58946-2345-4fbd-8f3f-2875deb93c7f', 'kK9QkibClpHBz7psCCi0oxFYwY6yi5rxPwL0R89W8ez6WemXcTbxmjsUYoquOkYc', '2023-03-15 13:18:55.527399', '2023-02-13 13:18:55.527399+07', 'MAHASARAKHAM', '11053');
+INSERT INTO users.tokens VALUES ('c2c58946-2345-4fbd-8f3f-2875deb93c7f', 'V9o48a6wAXzFjSfxePBsy1mQKp1YGwDGhByMA2YIfMwGn0Xdb0NaWkuBZTgnrSUp', '2023-03-15 13:49:28.700314', '2023-02-13 13:49:28.700314+07', 'MAHASARAKHAM', '11053');
+INSERT INTO users.tokens VALUES ('c2c58946-2345-4fbd-8f3f-2875deb93c7f', 'ZdJNPfP22KwEj2aM6DEZXAMx7oNtTIGbxvZ0kE2kNpoYMpEGSRaRX9pll1kC3DJi', '2023-03-15 14:15:12.454121', '2023-02-13 14:15:12.454121+07', 'MAHASARAKHAM', '11053');
+INSERT INTO users.tokens VALUES ('c2c58946-2345-4fbd-8f3f-2875deb93c7f', '2rQVwBOoDLG9kAU1eGNuepOadjasdFISxRUDlTQsRhm7pToF0MZfgtlJ3GAK3RDu', '2023-03-15 14:19:53.323028', '2023-02-13 14:19:53.323028+07', 'MAHASARAKHAM', '11053');
+INSERT INTO users.tokens VALUES ('c2c58946-2345-4fbd-8f3f-2875deb93c7f', 'x1fuwQmr3pOYhKgIyl8p8pUDVnECE5muFUjQqhAQ2Fd4ylTg17thI6fNY57SUcnH', '2023-03-15 16:01:46.185778', '2023-02-13 16:01:46.185778+07', 'MAHASARAKHAM', '11053');
+INSERT INTO users.tokens VALUES ('c2c58946-2345-4fbd-8f3f-2875deb93c7f', 'zudfgvvA1h91nN1zgVY4dDzfKgXbu2urzwQAyI8DheCY23ZP7j7bUM6F3DFZxkbm', '2023-03-15 16:11:20.232089', '2023-02-13 16:11:20.232089+07', 'MAHASARAKHAM', '11053');
+INSERT INTO users.tokens VALUES ('c2c58946-2345-4fbd-8f3f-2875deb93c7f', '6olbe6isuxroPKmXm4wgWiVQqrYjXSpjT27s8bfrJULQypVsrmXhdaDtKMKbmdCk', '2023-03-15 16:17:37.505278', '2023-02-13 16:17:37.505278+07', 'MAHASARAKHAM', '11053');
+INSERT INTO users.tokens VALUES ('c2c58946-2345-4fbd-8f3f-2875deb93c7f', 'yyw8cXAGdyDIhPF5gYmqmVHw1JmZEEy5dLUwy5CaN6wZlXylhpa8WNpg7ChhLN5Y', '2023-03-15 16:22:08.886399', '2023-02-13 16:22:08.886399+07', 'MAHASARAKHAM', '11053');
+INSERT INTO users.tokens VALUES ('c2c58946-2345-4fbd-8f3f-2875deb93c7f', 'S2k3kD5HXlvCppjNIAuudQlGNgv6ZBjiZDoaWgn5f2NOppk4xwf2LVTmpdSO1ILu', '2023-03-15 16:26:03.853616', '2023-02-13 16:26:03.853616+07', 'MAHASARAKHAM', '11053');
+INSERT INTO users.tokens VALUES ('c2c58946-2345-4fbd-8f3f-2875deb93c7f', '4tiFKnVf7rx16zQyq6sfy6uz2oEHGfTBKAV78ic4i4Mtkb6LCuKvhHCffKWDUbmm', '2023-03-15 16:28:47.182501', '2023-02-13 16:28:47.182501+07', 'MAHASARAKHAM', '11053');
+INSERT INTO users.tokens VALUES ('c2c58946-2345-4fbd-8f3f-2875deb93c7f', 'f3YfNOZQI99ER7c6yNEwnOpHP1VTd0bgZGknpBDTrWNN93CtJqcF85PgvSUuowPL', '2023-03-15 16:32:43.654318', '2023-02-13 16:32:43.654318+07', 'MAHASARAKHAM', '11053');
+INSERT INTO users.tokens VALUES ('c2c58946-2345-4fbd-8f3f-2875deb93c7f', 'tZ7SQ635OKuTG6RSMhd2JnHhuAlpwMXxnG0Zjgd4tTHjsOEJpDDymcKmewuvpqiu', '2023-03-15 16:34:58.07172', '2023-02-13 16:34:58.07172+07', 'MAHASARAKHAM', '11053');
+INSERT INTO users.tokens VALUES ('c2c58946-2345-4fbd-8f3f-2875deb93c7f', 'oRRvjF8NiXPxc4c5UXdNrFJTl5e1fgJrnk2Wofrj5LWemiW9IqAhKBivdgEeGnEF', '2023-03-15 16:36:15.250914', '2023-02-13 16:36:15.250914+07', 'MAHASARAKHAM', '11053');
+INSERT INTO users.tokens VALUES ('c2c58946-2345-4fbd-8f3f-2875deb93c7f', 'SmgcQBmJkAreoTfetsg9QeO55n1BpNJt0qLK7NoGgICBwx324mIqVw3lCQ81FEdP', '2023-03-15 20:23:25.651055', '2023-02-13 20:23:25.651055+07', 'MAHASARAKHAM', '11053');
+INSERT INTO users.tokens VALUES ('c2c58946-2345-4fbd-8f3f-2875deb93c7f', 'PRgQdRilmrrBERY0JPlZxr1AvjKf3Yb058omoC5NElca5zg47L32o67U6r1oApgz', '2023-03-15 20:24:51.414258', '2023-02-13 20:24:51.414258+07', 'MAHASARAKHAM', '11053');
+INSERT INTO users.tokens VALUES ('c2c58946-2345-4fbd-8f3f-2875deb93c7f', 'uCAv3tuXOI5VB8chADbQVSz1aPHaADd0FRgpFEmGmcGQGHgbn84ttsZar90gs4DL', '2023-03-15 20:29:16.213174', '2023-02-13 20:29:16.213174+07', 'MAHASARAKHAM', '11053');
+INSERT INTO users.tokens VALUES ('c2c58946-2345-4fbd-8f3f-2875deb93c7f', 'voTpa4DecZLqiEMpsmm1qbfmKdcudzXgSmcDJDTU467Ud5AK9PfelU6OWzVjs76h', '2023-03-16 06:07:08.29263', '2023-02-14 06:07:08.29263+07', 'MAHASARAKHAM', '11053');
+INSERT INTO users.tokens VALUES ('c2c58946-2345-4fbd-8f3f-2875deb93c7f', 'y7eUDkELlnfsgir77cSCcrR8jiBnnsm331fk4dbSa0EU7EclJE29K6VGjuI631cZ', '2023-03-16 08:32:12.950573', '2023-02-14 08:32:12.950573+07', 'MAHASARAKHAM', '11053');
+INSERT INTO users.tokens VALUES ('c2c58946-2345-4fbd-8f3f-2875deb93c7f', 'oZ3gUZo2RRBsdYPZYcjWxAoJnFZz2R1g35iBLwJLptr8xNu3ZmR4wobBUlFa2vt6', '2023-03-16 08:52:44.447144', '2023-02-14 08:52:44.447144+07', 'MAHASARAKHAM', '11053');
+INSERT INTO users.tokens VALUES ('c2c58946-2345-4fbd-8f3f-2875deb93c7f', 'Fnn2YV4WLSPJnba464Rus7lJrPCGM9OZ5rivN46saRpQmbnvkWasmGWvdqbZiqjM', '2023-03-16 08:54:07.717972', '2023-02-14 08:54:07.717972+07', 'MAHASARAKHAM', '11053');
+INSERT INTO users.tokens VALUES ('c2c58946-2345-4fbd-8f3f-2875deb93c7f', 's3fli1N1sK0gT2PXHGitMtJ5H0PopY9ZFPMu10UTcLKiox0rSJ3vUHDcDbHYU1tv', '2023-03-16 09:02:44.774738', '2023-02-14 09:02:44.774738+07', 'MAHASARAKHAM', '11053');
+INSERT INTO users.tokens VALUES ('c2c58946-2345-4fbd-8f3f-2875deb93c7f', 'aZmKFaJ4sFVW2CINHfvoof6wgKss4qlQu1qr2r5BvYhJxwrGrQ326eaYqV4FheUO', '2023-03-16 09:27:04.687212', '2023-02-14 09:27:04.687212+07', 'MAHASARAKHAM', '11053');
+INSERT INTO users.tokens VALUES ('c2c58946-2345-4fbd-8f3f-2875deb93c7f', 'PvopdCtiVxhFRKqAa2hkXxXgrElvWjV2T6X0DIBP1HGkrEJODijaxCDZQ4owuEFX', '2023-03-16 09:28:08.942569', '2023-02-14 09:28:08.942569+07', 'MAHASARAKHAM', '11053');
+INSERT INTO users.tokens VALUES ('c2c58946-2345-4fbd-8f3f-2875deb93c7f', 'koBKYvuk3sLyumOt2jndJfp5N919vjmgeyk9bX0PTvQnsQKndPM6Lf9VUBwEd30f', '2023-03-16 10:19:20.895057', '2023-02-14 10:19:20.895057+07', 'MAHASARAKHAM', '11053');
+INSERT INTO users.tokens VALUES ('c2c58946-2345-4fbd-8f3f-2875deb93c7f', '6p3OZLOBOC5gwjeXQjRTMUCLMRfdPea1utiSnfak77dl62PPTuJFrtGBwSohwCYT', '2023-03-16 10:31:07.394182', '2023-02-14 10:31:07.394182+07', 'MAHASARAKHAM', '11053');
+INSERT INTO users.tokens VALUES ('c2c58946-2345-4fbd-8f3f-2875deb93c7f', 't6EhXcLP885o1z0JBv4crYTDtm2r1bca02nsQPf1URmef7OfHgkzAOJDNcL4RmzA', '2023-03-16 10:34:36.380451', '2023-02-14 10:34:36.380451+07', 'MAHASARAKHAM', '11053');
+INSERT INTO users.tokens VALUES ('c2c58946-2345-4fbd-8f3f-2875deb93c7f', 'uaUxfthTx5AXZ7U8kRmyLEV0xCTKwNlVnP4zcGvCrZlNSCPM1LLII5bWljUiLQ0o', '2023-03-16 15:05:58.773473', '2023-02-14 15:05:58.773473+07', 'MAHASARAKHAM', '11053');
+INSERT INTO users.tokens VALUES ('c2c58946-2345-4fbd-8f3f-2875deb93c7f', 'OcV7FvDA9KzSjixV3vu6TpUg7lRUB2wjeLdNzytlBtlx4RkA9xKkFOU35a7Ntl8W', '2023-03-16 15:22:16.493916', '2023-02-14 15:22:16.493916+07', 'MAHASARAKHAM', '11053');
+INSERT INTO users.tokens VALUES ('c2c58946-2345-4fbd-8f3f-2875deb93c7f', '8BnaQaDkAOESIDkXfpJWxC4pbLfleLDV7MWM77VP3fdwuCaubK9GagGl349JwUzS', '2023-03-17 06:02:14.865657', '2023-02-15 06:02:14.865657+07', 'MAHASARAKHAM', '11053');
+INSERT INTO users.tokens VALUES ('c2c58946-2345-4fbd-8f3f-2875deb93c7f', 'E7aEANfpHNKjoWv1qloZwiJfWL5dObtfvOxC7XBb8mJurBBvbFAYDLW35MepUOUl', '2023-03-17 12:38:50.236511', '2023-02-15 12:38:50.236511+07', 'MAHASARAKHAM', '11053');
+INSERT INTO users.tokens VALUES ('c2c58946-2345-4fbd-8f3f-2875deb93c7f', 'FyiQI1B1HD6GS7OSpLw4RmwVBFyJqBB9nBlzdpk5A9IsAi3FRosbzil5NLXG9aqg', '2023-03-17 13:38:59.201484', '2023-02-15 13:38:59.201484+07', 'MAHASARAKHAM', '11053');
+INSERT INTO users.tokens VALUES ('c2c58946-2345-4fbd-8f3f-2875deb93c7f', 'fQNO0u9QWJkTAieXxoCTlla2sdK1QJSP8Mo0KDKkbfCjBlb06KCKIktlgvsvuJzK', '2023-03-17 14:03:41.678036', '2023-02-15 14:03:41.678036+07', 'MAHASARAKHAM', '11053');
+INSERT INTO users.tokens VALUES ('c2c58946-2345-4fbd-8f3f-2875deb93c7f', 'RIyVq3zgqWSXQwhvwbdzWL3bwlxTmW0AiUCMwLuQApATWSA4gVytIFpjjnDrIiQO', '2023-03-17 16:09:07.512021', '2023-02-15 16:09:07.512021+07', 'MAHASARAKHAM', '11053');
+INSERT INTO users.tokens VALUES ('c2c58946-2345-4fbd-8f3f-2875deb93c7f', '1Nh3C4l5TsLj2V1Qr5jUq4QAeyyeghkYQtsfRhAnxf1Vp0oTxe6p7m61XACcHW9H', '2023-03-17 16:10:02.980336', '2023-02-15 16:10:02.980336+07', 'MAHASARAKHAM', '11053');
+INSERT INTO users.tokens VALUES ('c2c58946-2345-4fbd-8f3f-2875deb93c7f', '5EfZyn5h88K9fNBtb1LYaottjvAsLUaxeUKZJX4E5tHzyqmO0DokRYPPpD2ckbzT', '2023-03-17 16:11:52.101821', '2023-02-15 16:11:52.101821+07', 'MAHASARAKHAM', '11053');
+INSERT INTO users.tokens VALUES ('c2c58946-2345-4fbd-8f3f-2875deb93c7f', 'y3q6oUs2idwvnXvnr7tEWSIdhqhwh8bRHdt3uzjm7HZblift72cpIiKVK2HSW8Nh', '2023-03-17 16:24:53.01717', '2023-02-15 16:24:53.01717+07', 'MAHASARAKHAM', '11053');
+INSERT INTO users.tokens VALUES ('c2c58946-2345-4fbd-8f3f-2875deb93c7f', 'vhVTCbOHqSmdHFK7QHu4dNIMZjj6RpJVCSJTqZQcu8yDchKUyVFqYzgDbCAp7wJV', '2023-03-17 17:58:54.998453', '2023-02-15 17:58:54.998453+07', 'MAHASARAKHAM', '11053');
+INSERT INTO users.tokens VALUES ('c2c58946-2345-4fbd-8f3f-2875deb93c7f', 'MmFB8PoBcqVXFNvDY5uCVVmxN9t4ML480QNcM21y8hsAi5caqMEpT58pbdS6JnXp', '2023-03-17 18:50:29.500864', '2023-02-15 18:50:29.500864+07', 'MAHASARAKHAM', '11053');
+INSERT INTO users.tokens VALUES ('c2c58946-2345-4fbd-8f3f-2875deb93c7f', 'JeEwUX9FcwoRU6grnKQBA2rdkl7j6VslbkgF0Oaf8TYD11kIfcWvyeU9AEJTLgJg', '2023-03-17 18:57:11.714148', '2023-02-15 18:57:11.714148+07', 'MAHASARAKHAM', '11053');
+INSERT INTO users.tokens VALUES ('c2c58946-2345-4fbd-8f3f-2875deb93c7f', 'M72K5DCcSVr30nNxfSvVBR6KwGX5kNZaSnbrKO2LaKrbWkiqq3S6MiEYsCro6AHe', '2023-03-17 20:48:32.593477', '2023-02-15 20:48:32.593477+07', 'MAHASARAKHAM', '11053');
+INSERT INTO users.tokens VALUES ('c2c58946-2345-4fbd-8f3f-2875deb93c7f', '3Hb0MKSAmVsYhychMP1Cdax8w0LwNZy0hmKc9Cp4cdKUaR5vhWlZoPbkY4m9YLWS', '2023-03-17 21:19:25.552894', '2023-02-15 21:19:25.552894+07', 'MAHASARAKHAM', '11053');
+INSERT INTO users.tokens VALUES ('c2c58946-2345-4fbd-8f3f-2875deb93c7f', 'F09dnOMAqZsByK2QqQD8DkDSnAGqJSRUnKAnQoq2AyHOhgoZVu37lAEfVvQVI9Ld', '2023-03-18 10:37:31.675327', '2023-02-16 10:37:31.675327+07', 'MAHASARAKHAM', '11053');
+INSERT INTO users.tokens VALUES ('c2c58946-2345-4fbd-8f3f-2875deb93c7f', 'b1IEcFTbrrWhBHaFKfmvq2XH2XyPndRSqiuhoFz8Wf42UihIbskziYnF3WGIqIHz', '2023-03-18 12:33:24.147868', '2023-02-16 12:33:24.147868+07', 'MAHASARAKHAM', '11053');
+INSERT INTO users.tokens VALUES ('c2c58946-2345-4fbd-8f3f-2875deb93c7f', 't5psTAecKlm0cKELxPfK0LJtBJaOKhOYlCZIupYGbJJEhJzNgDO1OY26BpfRBrV5', '2023-03-18 15:58:39.540387', '2023-02-16 15:58:39.540387+07', 'MAHASARAKHAM', '11053');
+INSERT INTO users.tokens VALUES ('c2c58946-2345-4fbd-8f3f-2875deb93c7f', 'xLpCwADbAWIYNUeUajXkBs7szJQ1IvJA1u8dAq0eCpamdljMaf1gGF3oOm8k6fsJ', '2023-03-18 20:53:12.829073', '2023-02-16 20:53:12.829073+07', 'MAHASARAKHAM', '11053');
+INSERT INTO users.tokens VALUES ('c2c58946-2345-4fbd-8f3f-2875deb93c7f', 'jgcH8rBmXNVRjDTWO0xgubw95EKSUhIEcvUEh0aSJzaeuzjV9LiLX3rb4n2SRNtL', '2023-03-19 11:33:53.069954', '2023-02-17 11:33:53.069954+07', 'MAHASARAKHAM', '11053');
+INSERT INTO users.tokens VALUES ('c2c58946-2345-4fbd-8f3f-2875deb93c7f', 'aPnp2iWAe5qNVNB1ds0MdgAGqZLW54jCVfkVUj2YyEFT889zj2KPVtBUK8jHrPcz', '2023-03-19 19:46:10.540925', '2023-02-17 19:46:10.540925+07', 'MAHASARAKHAM', '11053');
+INSERT INTO users.tokens VALUES ('c2c58946-2345-4fbd-8f3f-2875deb93c7f', 'hsjUhK6LGYp3CQISnQsIydxnouEdJdx4cUQ4sMRY7CuRhvB4W73QFSjsySYcn9do', '2023-03-20 07:30:57.108201', '2023-02-18 07:30:57.108201+07', 'MAHASARAKHAM', '11053');
+INSERT INTO users.tokens VALUES ('c2c58946-2345-4fbd-8f3f-2875deb93c7f', '3k69IEDSM8sss7s5pATWN1nTagNdVfVmTPqkSJGedRi3xIiMXSl3uS2nodRwEfqp', '2023-03-20 22:04:54.098655', '2023-02-18 22:04:54.098655+07', 'MAHASARAKHAM', '11053');
+INSERT INTO users.tokens VALUES ('c2c58946-2345-4fbd-8f3f-2875deb93c7f', 'mTDQEeobpWJBGKOsIaOSbZomieQwjrcldPAka82UjIWH3ORNR3g6DSyXxSj2ul9V', '2023-03-21 09:25:38.861994', '2023-02-19 09:25:38.861994+07', 'MAHASARAKHAM', '11053');
+INSERT INTO users.tokens VALUES ('c2c58946-2345-4fbd-8f3f-2875deb93c7f', '9lbpcoTLPw7Lul8nAbMQuAOdVXSeF2ULK8C2NIf1q3YjcPuZLczifa5du8w2vaOz', '2023-03-21 20:20:13.839361', '2023-02-19 20:20:13.839361+07', 'MAHASARAKHAM', '11053');
+INSERT INTO users.tokens VALUES ('c2c58946-2345-4fbd-8f3f-2875deb93c7f', '9yYAxtyUmlXh9e5H6nBQi4NpDymyek5jR9RQdws2nFA2ZT6MQUDFNQwiepiyDqfX', '2023-03-22 06:14:01.093441', '2023-02-20 06:14:01.093441+07', 'MAHASARAKHAM', '11053');
+INSERT INTO users.tokens VALUES ('c2c58946-2345-4fbd-8f3f-2875deb93c7f', 'zAdcovD2agzXwKhEp9g78zrSXNUdX4X6MhJxEHYxKVp5UPxXXteCSvjftk1DiDYt', '2023-03-22 09:18:49.469613', '2023-02-20 09:18:49.469613+07', 'MAHASARAKHAM', '11053');
+INSERT INTO users.tokens VALUES ('c2c58946-2345-4fbd-8f3f-2875deb93c7f', 'LvZfXDMLxHuHJBEHVtkZhjgWI4pWI2ncoySnpxyL1IxJIbFbjwenfPZ5L9e622z1', '2023-03-22 13:10:30.765887', '2023-02-20 13:10:30.765887+07', 'MAHASARAKHAM', '11053');
+INSERT INTO users.tokens VALUES ('c2c58946-2345-4fbd-8f3f-2875deb93c7f', '7sqUg51ArdSTPHPzkf5SxNqZAgOeLmDke4la91UL87rGAfRmN6JK9aNEKldEHxi0', '2023-03-22 13:21:40.437709', '2023-02-20 13:21:40.437709+07', 'MAHASARAKHAM', '11053');
+INSERT INTO users.tokens VALUES ('c2c58946-2345-4fbd-8f3f-2875deb93c7f', 'nWPc3oCZd4WtH2WJXG0HfJaKfJ5sJmzSeRoAfVhwSF46Z2PJtgKpTGHRRe5dypnw', '2023-03-22 14:41:14.905108', '2023-02-20 14:41:14.905108+07', 'MAHASARAKHAM', '11053');
+INSERT INTO users.tokens VALUES ('c2c58946-2345-4fbd-8f3f-2875deb93c7f', 'UCkKQECLtBiuzAnu1QzyOOAAVnOkscCIEiZaz5kArBvB0NPfy0kKiyY0bW2TP3tj', '2023-03-22 15:01:04.062711', '2023-02-20 15:01:04.062711+07', 'MAHASARAKHAM', '11053');
+INSERT INTO users.tokens VALUES ('c2c58946-2345-4fbd-8f3f-2875deb93c7f', 'QD8ftZLc45veUaf4F9JnTfNobyoBv04sR7G5sDBzFO7y72LKpvjqjTmqKiOoLOXX', '2023-03-22 15:14:13.614324', '2023-02-20 15:14:13.614324+07', 'MAHASARAKHAM', '11053');
+INSERT INTO users.tokens VALUES ('c2c58946-2345-4fbd-8f3f-2875deb93c7f', 'O6zcSGBA6LFvz96x2UQkozUaMiLXWgaSI5X5RLFutLT9iaxaVkKzCgugQ9JElOGI', '2023-03-22 15:17:19.498203', '2023-02-20 15:17:19.498203+07', 'MAHASARAKHAM', '11053');
+INSERT INTO users.tokens VALUES ('c2c58946-2345-4fbd-8f3f-2875deb93c7f', 'TwSA4Fkb1cWfK9yV5m9ez6iBze3uuJqMIVsEyCD53PYExYdu6c20W3180HqAkyRo', '2023-03-22 15:39:23.566887', '2023-02-20 15:39:23.566887+07', 'MAHASARAKHAM', '11053');
+INSERT INTO users.tokens VALUES ('c2c58946-2345-4fbd-8f3f-2875deb93c7f', 'oTJ3y45SCfLtnFreaLhpISY9QUZXah55e96zCcM0Zt2EHfvPE35mE5et05FmDNul', '2023-03-22 16:13:27.515147', '2023-02-20 16:13:27.515147+07', 'MAHASARAKHAM', '11053');
+INSERT INTO users.tokens VALUES ('c2c58946-2345-4fbd-8f3f-2875deb93c7f', 'Mux8Pg8tjNFSFQ94HOLpXWCw1VkxiEv7Imcy2Uo53tPyefpxIykkrcl97xfs2eUP', '2023-03-22 16:21:18.958616', '2023-02-20 16:21:18.958616+07', 'MAHASARAKHAM', '11053');
+INSERT INTO users.tokens VALUES ('c2c58946-2345-4fbd-8f3f-2875deb93c7f', 'bjzUFjR15kUNXxrCINGnDussYslmFbQhWsyQYBaBZafFfHyi25I7O72El6N0chzq', '2023-03-22 18:18:04.420081', '2023-02-20 18:18:04.420081+07', 'MAHASARAKHAM', '11053');
+INSERT INTO users.tokens VALUES ('c2c58946-2345-4fbd-8f3f-2875deb93c7f', 'WGK6GQ2tF2ZLg5h0vveWx3ZdzZ7D7CWI5kkKIE2WY89KZnC2jAWCrRs4EipnXdk5', '2023-03-22 19:38:30.718145', '2023-02-20 19:38:30.718145+07', 'MAHASARAKHAM', '11053');
+INSERT INTO users.tokens VALUES ('c2c58946-2345-4fbd-8f3f-2875deb93c7f', '3KZP3mQir0RpCHra3BhB0TqUygC7GkXQ6Qkf2KJlWbttXRNRwpa0kpTfYR3FKacn', '2023-03-23 05:53:28.00465', '2023-02-21 05:53:28.00465+07', 'MAHASARAKHAM', '11053');
+INSERT INTO users.tokens VALUES ('c2c58946-2345-4fbd-8f3f-2875deb93c7f', 'lmZAEkm2l0Moikf7iInsIrndEwfp4eRfZYbMuI0XihTatXLh3IXFIlZgreBZlDfm', '2023-03-23 08:59:58.655939', '2023-02-21 08:59:58.655939+07', 'MAHASARAKHAM', '11053');
+INSERT INTO users.tokens VALUES ('c2c58946-2345-4fbd-8f3f-2875deb93c7f', 'KQjR2o3K2e45wAU4s16mpmRakkttJ3RCYC56yCx4SrVoYkS2rQqYnkKWKG75AB47', '2023-03-23 13:35:49.464142', '2023-02-21 13:35:49.464142+07', 'MAHASARAKHAM', '11053');
+INSERT INTO users.tokens VALUES ('c2c58946-2345-4fbd-8f3f-2875deb93c7f', '2xdjCCCvFTWmSr4YeA4PuOrFhV3ogwfVQyPSxQZD04MwcS1Jklu750m5deRRUr9j', '2023-03-23 14:44:01.470038', '2023-02-21 14:44:01.470038+07', 'MAHASARAKHAM', '11053');
+INSERT INTO users.tokens VALUES ('c2c58946-2345-4fbd-8f3f-2875deb93c7f', 'Rhx6P9dVqks7Vu5IOOwagIuPJIGyOFySacVUCjTMWjFNGrqGSZJ7S9Bt8S5Ui8In', '2023-03-23 14:59:03.095983', '2023-02-21 14:59:03.095983+07', 'MAHASARAKHAM', '11053');
+INSERT INTO users.tokens VALUES ('c2c58946-2345-4fbd-8f3f-2875deb93c7f', 'pag6wbH5dddfGy4XHkKPmzf8Ap2sUSGzgasGK5dxVKSiF1TrFKDHebggBQNXo271', '2023-03-23 15:47:14.185883', '2023-02-21 15:47:14.185883+07', 'MAHASARAKHAM', '11053');
 
 
 --
--- TOC entry 3843 (class 0 OID 41088)
--- Dependencies: 219
+-- TOC entry 3968 (class 0 OID 115189)
+-- Dependencies: 294
+-- Data for Name: user_platforms; Type: TABLE DATA; Schema: users; Owner: -
+--
+
+INSERT INTO users.user_platforms VALUES ('3f4530c8-c1b6-4078-b75a-3878cb03d63d', 'c2c58946-2345-4fbd-8f3f-2875deb93c7f', 'ข้อมูลมาตรฐาน เขตสุขภาพที่ 7', '0000000000000', '2023-02-15 19:00:02.42291', '2023-02-15 19:30:33.842859', '137e6fe0-cc02-4594-9491-c2d023df5456');
+INSERT INTO users.user_platforms VALUES ('9656188b-812c-49b4-b3c1-3c2e9129dfc8', 'c2c58946-2345-4fbd-8f3f-2875deb93c7f', 'ข้อมูลส่งต่อ (Refer) เขตสุขภาพที่ 7', '1212111111111', '2023-02-15 21:19:39.102943', NULL, '137e6fe0-cc02-4594-9491-c2d023df5456');
+
+
+--
+-- TOC entry 3895 (class 0 OID 41088)
+-- Dependencies: 221
 -- Data for Name: users; Type: TABLE DATA; Schema: users; Owner: -
 --
 
@@ -2000,8 +2282,8 @@ INSERT INTO users.users VALUES ('c2c58946-2345-4fbd-8f3f-2875deb93c7f', 'Satit',
 
 
 --
--- TOC entry 3846 (class 0 OID 49279)
--- Dependencies: 222
+-- TOC entry 3898 (class 0 OID 49279)
+-- Dependencies: 224
 -- Data for Name: zones; Type: TABLE DATA; Schema: users; Owner: -
 --
 
@@ -2012,7 +2294,7 @@ INSERT INTO users.zones VALUES ('4600', 'กาฬสินธุ์', 'KALASIN'
 
 
 --
--- TOC entry 3514 (class 2606 OID 74000)
+-- TOC entry 3547 (class 2606 OID 74000)
 -- Name: clinic_mappings clinic_mappings_pk; Type: CONSTRAINT; Schema: libs; Owner: -
 --
 
@@ -2021,7 +2303,7 @@ ALTER TABLE ONLY libs.clinic_mappings
 
 
 --
--- TOC entry 3534 (class 2606 OID 82074)
+-- TOC entry 3567 (class 2606 OID 82074)
 -- Name: lab_mappings clinic_mappings_pk_1; Type: CONSTRAINT; Schema: libs; Owner: -
 --
 
@@ -2030,7 +2312,7 @@ ALTER TABLE ONLY libs.lab_mappings
 
 
 --
--- TOC entry 3512 (class 2606 OID 73992)
+-- TOC entry 3545 (class 2606 OID 73992)
 -- Name: clinics clinics_pk; Type: CONSTRAINT; Schema: libs; Owner: -
 --
 
@@ -2039,7 +2321,7 @@ ALTER TABLE ONLY libs.clinics
 
 
 --
--- TOC entry 3508 (class 2606 OID 73964)
+-- TOC entry 3541 (class 2606 OID 73964)
 -- Name: drug_mappings drug_mappings_pk; Type: CONSTRAINT; Schema: libs; Owner: -
 --
 
@@ -2048,7 +2330,7 @@ ALTER TABLE ONLY libs.drug_mappings
 
 
 --
--- TOC entry 3516 (class 2606 OID 74007)
+-- TOC entry 3549 (class 2606 OID 74007)
 -- Name: drug_usages drug_usages_pk; Type: CONSTRAINT; Schema: libs; Owner: -
 --
 
@@ -2057,7 +2339,7 @@ ALTER TABLE ONLY libs.drug_usages
 
 
 --
--- TOC entry 3504 (class 2606 OID 82051)
+-- TOC entry 3537 (class 2606 OID 82051)
 -- Name: drugs drugs_pk; Type: CONSTRAINT; Schema: libs; Owner: -
 --
 
@@ -2066,7 +2348,7 @@ ALTER TABLE ONLY libs.drugs
 
 
 --
--- TOC entry 3510 (class 2606 OID 73985)
+-- TOC entry 3543 (class 2606 OID 73985)
 -- Name: insurance_mappings insurance_mappings_pk; Type: CONSTRAINT; Schema: libs; Owner: -
 --
 
@@ -2075,7 +2357,7 @@ ALTER TABLE ONLY libs.insurance_mappings
 
 
 --
--- TOC entry 3506 (class 2606 OID 73976)
+-- TOC entry 3539 (class 2606 OID 73976)
 -- Name: insurances insurances_pk; Type: CONSTRAINT; Schema: libs; Owner: -
 --
 
@@ -2084,7 +2366,7 @@ ALTER TABLE ONLY libs.insurances
 
 
 --
--- TOC entry 3520 (class 2606 OID 74034)
+-- TOC entry 3553 (class 2606 OID 74034)
 -- Name: lab_groups lab_groups_pk; Type: CONSTRAINT; Schema: libs; Owner: -
 --
 
@@ -2093,7 +2375,7 @@ ALTER TABLE ONLY libs.lab_groups
 
 
 --
--- TOC entry 3518 (class 2606 OID 82057)
+-- TOC entry 3551 (class 2606 OID 82057)
 -- Name: labs lab_items_pk_1; Type: CONSTRAINT; Schema: libs; Owner: -
 --
 
@@ -2102,7 +2384,7 @@ ALTER TABLE ONLY libs.labs
 
 
 --
--- TOC entry 3528 (class 2606 OID 74058)
+-- TOC entry 3561 (class 2606 OID 74058)
 -- Name: nation_mappings nation_mappings_pk_1; Type: CONSTRAINT; Schema: libs; Owner: -
 --
 
@@ -2111,7 +2393,7 @@ ALTER TABLE ONLY libs.nation_mappings
 
 
 --
--- TOC entry 3526 (class 2606 OID 74053)
+-- TOC entry 3559 (class 2606 OID 74053)
 -- Name: nations nations_pk_3; Type: CONSTRAINT; Schema: libs; Owner: -
 --
 
@@ -2120,7 +2402,7 @@ ALTER TABLE ONLY libs.nations
 
 
 --
--- TOC entry 3524 (class 2606 OID 74046)
+-- TOC entry 3557 (class 2606 OID 74046)
 -- Name: occupation_mappings occupation_mappings_pk_1; Type: CONSTRAINT; Schema: libs; Owner: -
 --
 
@@ -2129,7 +2411,7 @@ ALTER TABLE ONLY libs.occupation_mappings
 
 
 --
--- TOC entry 3522 (class 2606 OID 74041)
+-- TOC entry 3555 (class 2606 OID 74041)
 -- Name: occupations occupations_pk_2; Type: CONSTRAINT; Schema: libs; Owner: -
 --
 
@@ -2138,7 +2420,7 @@ ALTER TABLE ONLY libs.occupations
 
 
 --
--- TOC entry 3530 (class 2606 OID 74063)
+-- TOC entry 3563 (class 2606 OID 74063)
 -- Name: providers providers_pk; Type: CONSTRAINT; Schema: libs; Owner: -
 --
 
@@ -2147,7 +2429,7 @@ ALTER TABLE ONLY libs.providers
 
 
 --
--- TOC entry 3532 (class 2606 OID 74070)
+-- TOC entry 3565 (class 2606 OID 74070)
 -- Name: wards wards_pk; Type: CONSTRAINT; Schema: libs; Owner: -
 --
 
@@ -2156,7 +2438,43 @@ ALTER TABLE ONLY libs.wards
 
 
 --
--- TOC entry 3537 (class 2606 OID 98467)
+-- TOC entry 3741 (class 2606 OID 107189)
+-- Name: transactions transactions_pk; Type: CONSTRAINT; Schema: logs; Owner: -
+--
+
+ALTER TABLE ONLY logs.transactions
+    ADD CONSTRAINT transactions_pk PRIMARY KEY (trx_id);
+
+
+--
+-- TOC entry 3745 (class 2606 OID 107186)
+-- Name: ipd ipd_pk; Type: CONSTRAINT; Schema: metadata; Owner: -
+--
+
+ALTER TABLE ONLY metadata.ipd
+    ADD CONSTRAINT ipd_pk PRIMARY KEY (hospcode, hn, an, ingress_zone);
+
+
+--
+-- TOC entry 3736 (class 2606 OID 107180)
+-- Name: opd opd_pk; Type: CONSTRAINT; Schema: metadata; Owner: -
+--
+
+ALTER TABLE ONLY metadata.opd
+    ADD CONSTRAINT opd_pk PRIMARY KEY (hospcode, hn, seq, date_serv, ingress_zone);
+
+
+--
+-- TOC entry 3734 (class 2606 OID 107175)
+-- Name: person person_pk; Type: CONSTRAINT; Schema: metadata; Owner: -
+--
+
+ALTER TABLE ONLY metadata.person
+    ADD CONSTRAINT person_pk PRIMARY KEY (hospcode, hn, ingress_zone);
+
+
+--
+-- TOC entry 3570 (class 2606 OID 98467)
 -- Name: appoint appoint_pk; Type: CONSTRAINT; Schema: rawdata_kk; Owner: -
 --
 
@@ -2165,7 +2483,7 @@ ALTER TABLE ONLY rawdata_kk.appoint
 
 
 --
--- TOC entry 3542 (class 2606 OID 98469)
+-- TOC entry 3575 (class 2606 OID 98469)
 -- Name: chronic chronic_pk; Type: CONSTRAINT; Schema: rawdata_kk; Owner: -
 --
 
@@ -2174,7 +2492,7 @@ ALTER TABLE ONLY rawdata_kk.chronic
 
 
 --
--- TOC entry 3544 (class 2606 OID 98471)
+-- TOC entry 3577 (class 2606 OID 98471)
 -- Name: drug drug_pk; Type: CONSTRAINT; Schema: rawdata_kk; Owner: -
 --
 
@@ -2183,7 +2501,7 @@ ALTER TABLE ONLY rawdata_kk.drug
 
 
 --
--- TOC entry 3548 (class 2606 OID 98473)
+-- TOC entry 3581 (class 2606 OID 98473)
 -- Name: drugallergy drugallergy_pk; Type: CONSTRAINT; Schema: rawdata_kk; Owner: -
 --
 
@@ -2192,7 +2510,7 @@ ALTER TABLE ONLY rawdata_kk.drugallergy
 
 
 --
--- TOC entry 3552 (class 2606 OID 98475)
+-- TOC entry 3585 (class 2606 OID 98475)
 -- Name: ipd ipd_pk; Type: CONSTRAINT; Schema: rawdata_kk; Owner: -
 --
 
@@ -2201,7 +2519,7 @@ ALTER TABLE ONLY rawdata_kk.ipd
 
 
 --
--- TOC entry 3555 (class 2606 OID 98477)
+-- TOC entry 3588 (class 2606 OID 98477)
 -- Name: ipdx ipdx_pk; Type: CONSTRAINT; Schema: rawdata_kk; Owner: -
 --
 
@@ -2210,7 +2528,7 @@ ALTER TABLE ONLY rawdata_kk.ipdx
 
 
 --
--- TOC entry 3558 (class 2606 OID 98479)
+-- TOC entry 3591 (class 2606 OID 98479)
 -- Name: ipop ipop_pk; Type: CONSTRAINT; Schema: rawdata_kk; Owner: -
 --
 
@@ -2219,7 +2537,7 @@ ALTER TABLE ONLY rawdata_kk.ipop
 
 
 --
--- TOC entry 3560 (class 2606 OID 98481)
+-- TOC entry 3593 (class 2606 OID 98481)
 -- Name: lab lab_pk; Type: CONSTRAINT; Schema: rawdata_kk; Owner: -
 --
 
@@ -2228,7 +2546,7 @@ ALTER TABLE ONLY rawdata_kk.lab
 
 
 --
--- TOC entry 3562 (class 2606 OID 98812)
+-- TOC entry 3595 (class 2606 OID 98812)
 -- Name: opd opd_pk; Type: CONSTRAINT; Schema: rawdata_kk; Owner: -
 --
 
@@ -2237,7 +2555,7 @@ ALTER TABLE ONLY rawdata_kk.opd
 
 
 --
--- TOC entry 3564 (class 2606 OID 98485)
+-- TOC entry 3597 (class 2606 OID 98485)
 -- Name: opdx opdx_pk; Type: CONSTRAINT; Schema: rawdata_kk; Owner: -
 --
 
@@ -2246,7 +2564,7 @@ ALTER TABLE ONLY rawdata_kk.opdx
 
 
 --
--- TOC entry 3566 (class 2606 OID 98487)
+-- TOC entry 3599 (class 2606 OID 98487)
 -- Name: opop opop_pk; Type: CONSTRAINT; Schema: rawdata_kk; Owner: -
 --
 
@@ -2255,7 +2573,7 @@ ALTER TABLE ONLY rawdata_kk.opop
 
 
 --
--- TOC entry 3573 (class 2606 OID 98489)
+-- TOC entry 3606 (class 2606 OID 98489)
 -- Name: person person_pk; Type: CONSTRAINT; Schema: rawdata_kk; Owner: -
 --
 
@@ -2264,7 +2582,7 @@ ALTER TABLE ONLY rawdata_kk.person
 
 
 --
--- TOC entry 3660 (class 2606 OID 98720)
+-- TOC entry 3693 (class 2606 OID 98720)
 -- Name: appoint appoint_pk; Type: CONSTRAINT; Schema: rawdata_kls; Owner: -
 --
 
@@ -2273,7 +2591,7 @@ ALTER TABLE ONLY rawdata_kls.appoint
 
 
 --
--- TOC entry 3665 (class 2606 OID 98722)
+-- TOC entry 3698 (class 2606 OID 98722)
 -- Name: chronic chronic_pk; Type: CONSTRAINT; Schema: rawdata_kls; Owner: -
 --
 
@@ -2282,7 +2600,7 @@ ALTER TABLE ONLY rawdata_kls.chronic
 
 
 --
--- TOC entry 3667 (class 2606 OID 98724)
+-- TOC entry 3700 (class 2606 OID 98724)
 -- Name: drug drug_pk; Type: CONSTRAINT; Schema: rawdata_kls; Owner: -
 --
 
@@ -2291,7 +2609,7 @@ ALTER TABLE ONLY rawdata_kls.drug
 
 
 --
--- TOC entry 3671 (class 2606 OID 98726)
+-- TOC entry 3704 (class 2606 OID 98726)
 -- Name: drugallergy drugallergy_pk; Type: CONSTRAINT; Schema: rawdata_kls; Owner: -
 --
 
@@ -2300,7 +2618,7 @@ ALTER TABLE ONLY rawdata_kls.drugallergy
 
 
 --
--- TOC entry 3675 (class 2606 OID 98728)
+-- TOC entry 3708 (class 2606 OID 98728)
 -- Name: ipd ipd_pk; Type: CONSTRAINT; Schema: rawdata_kls; Owner: -
 --
 
@@ -2309,7 +2627,7 @@ ALTER TABLE ONLY rawdata_kls.ipd
 
 
 --
--- TOC entry 3678 (class 2606 OID 98730)
+-- TOC entry 3711 (class 2606 OID 98730)
 -- Name: ipdx ipdx_pk; Type: CONSTRAINT; Schema: rawdata_kls; Owner: -
 --
 
@@ -2318,7 +2636,7 @@ ALTER TABLE ONLY rawdata_kls.ipdx
 
 
 --
--- TOC entry 3681 (class 2606 OID 98732)
+-- TOC entry 3714 (class 2606 OID 98732)
 -- Name: ipop ipop_pk; Type: CONSTRAINT; Schema: rawdata_kls; Owner: -
 --
 
@@ -2327,7 +2645,7 @@ ALTER TABLE ONLY rawdata_kls.ipop
 
 
 --
--- TOC entry 3683 (class 2606 OID 98734)
+-- TOC entry 3716 (class 2606 OID 98734)
 -- Name: lab lab_pk; Type: CONSTRAINT; Schema: rawdata_kls; Owner: -
 --
 
@@ -2336,7 +2654,7 @@ ALTER TABLE ONLY rawdata_kls.lab
 
 
 --
--- TOC entry 3685 (class 2606 OID 98810)
+-- TOC entry 3718 (class 2606 OID 98810)
 -- Name: opd opd_pk; Type: CONSTRAINT; Schema: rawdata_kls; Owner: -
 --
 
@@ -2345,7 +2663,7 @@ ALTER TABLE ONLY rawdata_kls.opd
 
 
 --
--- TOC entry 3687 (class 2606 OID 98738)
+-- TOC entry 3720 (class 2606 OID 98738)
 -- Name: opdx opdx_pk; Type: CONSTRAINT; Schema: rawdata_kls; Owner: -
 --
 
@@ -2354,7 +2672,7 @@ ALTER TABLE ONLY rawdata_kls.opdx
 
 
 --
--- TOC entry 3689 (class 2606 OID 98740)
+-- TOC entry 3722 (class 2606 OID 98740)
 -- Name: opop opop_pk; Type: CONSTRAINT; Schema: rawdata_kls; Owner: -
 --
 
@@ -2363,7 +2681,7 @@ ALTER TABLE ONLY rawdata_kls.opop
 
 
 --
--- TOC entry 3696 (class 2606 OID 98742)
+-- TOC entry 3729 (class 2606 OID 98742)
 -- Name: person person_pk; Type: CONSTRAINT; Schema: rawdata_kls; Owner: -
 --
 
@@ -2372,7 +2690,7 @@ ALTER TABLE ONLY rawdata_kls.person
 
 
 --
--- TOC entry 3578 (class 2606 OID 98549)
+-- TOC entry 3611 (class 2606 OID 98549)
 -- Name: appoint appoint_pk; Type: CONSTRAINT; Schema: rawdata_msk; Owner: -
 --
 
@@ -2381,7 +2699,7 @@ ALTER TABLE ONLY rawdata_msk.appoint
 
 
 --
--- TOC entry 3583 (class 2606 OID 98551)
+-- TOC entry 3616 (class 2606 OID 98551)
 -- Name: chronic chronic_pk; Type: CONSTRAINT; Schema: rawdata_msk; Owner: -
 --
 
@@ -2390,7 +2708,7 @@ ALTER TABLE ONLY rawdata_msk.chronic
 
 
 --
--- TOC entry 3585 (class 2606 OID 98553)
+-- TOC entry 3618 (class 2606 OID 98553)
 -- Name: drug drug_pk; Type: CONSTRAINT; Schema: rawdata_msk; Owner: -
 --
 
@@ -2399,7 +2717,7 @@ ALTER TABLE ONLY rawdata_msk.drug
 
 
 --
--- TOC entry 3589 (class 2606 OID 98555)
+-- TOC entry 3622 (class 2606 OID 98555)
 -- Name: drugallergy drugallergy_pk; Type: CONSTRAINT; Schema: rawdata_msk; Owner: -
 --
 
@@ -2408,7 +2726,7 @@ ALTER TABLE ONLY rawdata_msk.drugallergy
 
 
 --
--- TOC entry 3593 (class 2606 OID 98557)
+-- TOC entry 3626 (class 2606 OID 98557)
 -- Name: ipd ipd_pk; Type: CONSTRAINT; Schema: rawdata_msk; Owner: -
 --
 
@@ -2417,7 +2735,7 @@ ALTER TABLE ONLY rawdata_msk.ipd
 
 
 --
--- TOC entry 3596 (class 2606 OID 98559)
+-- TOC entry 3629 (class 2606 OID 98559)
 -- Name: ipdx ipdx_pk; Type: CONSTRAINT; Schema: rawdata_msk; Owner: -
 --
 
@@ -2426,7 +2744,7 @@ ALTER TABLE ONLY rawdata_msk.ipdx
 
 
 --
--- TOC entry 3599 (class 2606 OID 98561)
+-- TOC entry 3632 (class 2606 OID 98561)
 -- Name: ipop ipop_pk; Type: CONSTRAINT; Schema: rawdata_msk; Owner: -
 --
 
@@ -2435,7 +2753,7 @@ ALTER TABLE ONLY rawdata_msk.ipop
 
 
 --
--- TOC entry 3601 (class 2606 OID 98563)
+-- TOC entry 3634 (class 2606 OID 98563)
 -- Name: lab lab_pk; Type: CONSTRAINT; Schema: rawdata_msk; Owner: -
 --
 
@@ -2444,7 +2762,7 @@ ALTER TABLE ONLY rawdata_msk.lab
 
 
 --
--- TOC entry 3603 (class 2606 OID 98808)
+-- TOC entry 3636 (class 2606 OID 98808)
 -- Name: opd opd_pk; Type: CONSTRAINT; Schema: rawdata_msk; Owner: -
 --
 
@@ -2453,7 +2771,7 @@ ALTER TABLE ONLY rawdata_msk.opd
 
 
 --
--- TOC entry 3605 (class 2606 OID 98567)
+-- TOC entry 3638 (class 2606 OID 98567)
 -- Name: opdx opdx_pk; Type: CONSTRAINT; Schema: rawdata_msk; Owner: -
 --
 
@@ -2462,7 +2780,7 @@ ALTER TABLE ONLY rawdata_msk.opdx
 
 
 --
--- TOC entry 3607 (class 2606 OID 98569)
+-- TOC entry 3640 (class 2606 OID 98569)
 -- Name: opop opop_pk; Type: CONSTRAINT; Schema: rawdata_msk; Owner: -
 --
 
@@ -2471,7 +2789,7 @@ ALTER TABLE ONLY rawdata_msk.opop
 
 
 --
--- TOC entry 3614 (class 2606 OID 98571)
+-- TOC entry 3647 (class 2606 OID 98571)
 -- Name: person person_pk; Type: CONSTRAINT; Schema: rawdata_msk; Owner: -
 --
 
@@ -2480,7 +2798,7 @@ ALTER TABLE ONLY rawdata_msk.person
 
 
 --
--- TOC entry 3619 (class 2606 OID 98634)
+-- TOC entry 3652 (class 2606 OID 98634)
 -- Name: appoint appoint_pk; Type: CONSTRAINT; Schema: rawdata_roiet; Owner: -
 --
 
@@ -2489,7 +2807,7 @@ ALTER TABLE ONLY rawdata_roiet.appoint
 
 
 --
--- TOC entry 3624 (class 2606 OID 98636)
+-- TOC entry 3657 (class 2606 OID 98636)
 -- Name: chronic chronic_pk; Type: CONSTRAINT; Schema: rawdata_roiet; Owner: -
 --
 
@@ -2498,7 +2816,7 @@ ALTER TABLE ONLY rawdata_roiet.chronic
 
 
 --
--- TOC entry 3626 (class 2606 OID 98638)
+-- TOC entry 3659 (class 2606 OID 98638)
 -- Name: drug drug_pk; Type: CONSTRAINT; Schema: rawdata_roiet; Owner: -
 --
 
@@ -2507,7 +2825,7 @@ ALTER TABLE ONLY rawdata_roiet.drug
 
 
 --
--- TOC entry 3630 (class 2606 OID 98640)
+-- TOC entry 3663 (class 2606 OID 98640)
 -- Name: drugallergy drugallergy_pk; Type: CONSTRAINT; Schema: rawdata_roiet; Owner: -
 --
 
@@ -2516,7 +2834,7 @@ ALTER TABLE ONLY rawdata_roiet.drugallergy
 
 
 --
--- TOC entry 3634 (class 2606 OID 98642)
+-- TOC entry 3667 (class 2606 OID 98642)
 -- Name: ipd ipd_pk; Type: CONSTRAINT; Schema: rawdata_roiet; Owner: -
 --
 
@@ -2525,7 +2843,7 @@ ALTER TABLE ONLY rawdata_roiet.ipd
 
 
 --
--- TOC entry 3637 (class 2606 OID 98644)
+-- TOC entry 3670 (class 2606 OID 98644)
 -- Name: ipdx ipdx_pk; Type: CONSTRAINT; Schema: rawdata_roiet; Owner: -
 --
 
@@ -2534,7 +2852,7 @@ ALTER TABLE ONLY rawdata_roiet.ipdx
 
 
 --
--- TOC entry 3640 (class 2606 OID 98646)
+-- TOC entry 3673 (class 2606 OID 98646)
 -- Name: ipop ipop_pk; Type: CONSTRAINT; Schema: rawdata_roiet; Owner: -
 --
 
@@ -2543,7 +2861,7 @@ ALTER TABLE ONLY rawdata_roiet.ipop
 
 
 --
--- TOC entry 3642 (class 2606 OID 98648)
+-- TOC entry 3675 (class 2606 OID 98648)
 -- Name: lab lab_pk; Type: CONSTRAINT; Schema: rawdata_roiet; Owner: -
 --
 
@@ -2552,7 +2870,7 @@ ALTER TABLE ONLY rawdata_roiet.lab
 
 
 --
--- TOC entry 3644 (class 2606 OID 98806)
+-- TOC entry 3677 (class 2606 OID 98806)
 -- Name: opd opd_pk; Type: CONSTRAINT; Schema: rawdata_roiet; Owner: -
 --
 
@@ -2561,7 +2879,7 @@ ALTER TABLE ONLY rawdata_roiet.opd
 
 
 --
--- TOC entry 3646 (class 2606 OID 98652)
+-- TOC entry 3679 (class 2606 OID 98652)
 -- Name: opdx opdx_pk; Type: CONSTRAINT; Schema: rawdata_roiet; Owner: -
 --
 
@@ -2570,7 +2888,7 @@ ALTER TABLE ONLY rawdata_roiet.opdx
 
 
 --
--- TOC entry 3648 (class 2606 OID 98654)
+-- TOC entry 3681 (class 2606 OID 98654)
 -- Name: opop opop_pk; Type: CONSTRAINT; Schema: rawdata_roiet; Owner: -
 --
 
@@ -2579,7 +2897,7 @@ ALTER TABLE ONLY rawdata_roiet.opop
 
 
 --
--- TOC entry 3655 (class 2606 OID 98656)
+-- TOC entry 3688 (class 2606 OID 98656)
 -- Name: person person_pk; Type: CONSTRAINT; Schema: rawdata_roiet; Owner: -
 --
 
@@ -2588,7 +2906,7 @@ ALTER TABLE ONLY rawdata_roiet.person
 
 
 --
--- TOC entry 3496 (class 2606 OID 41114)
+-- TOC entry 3529 (class 2606 OID 41114)
 -- Name: admin admin_pk; Type: CONSTRAINT; Schema: users; Owner: -
 --
 
@@ -2597,7 +2915,7 @@ ALTER TABLE ONLY users.admin
 
 
 --
--- TOC entry 3490 (class 2606 OID 107069)
+-- TOC entry 3523 (class 2606 OID 107069)
 -- Name: hospitals hospitals_pk; Type: CONSTRAINT; Schema: users; Owner: -
 --
 
@@ -2606,7 +2924,16 @@ ALTER TABLE ONLY users.hospitals
 
 
 --
--- TOC entry 3502 (class 2606 OID 65662)
+-- TOC entry 3750 (class 2606 OID 115212)
+-- Name: platforms platforms_main_pk; Type: CONSTRAINT; Schema: users; Owner: -
+--
+
+ALTER TABLE ONLY users.platforms
+    ADD CONSTRAINT platforms_main_pk PRIMARY KEY (id);
+
+
+--
+-- TOC entry 3535 (class 2606 OID 65662)
 -- Name: tokens tokens_pk; Type: CONSTRAINT; Schema: users; Owner: -
 --
 
@@ -2615,7 +2942,16 @@ ALTER TABLE ONLY users.tokens
 
 
 --
--- TOC entry 3487 (class 2606 OID 107117)
+-- TOC entry 3748 (class 2606 OID 115216)
+-- Name: user_platforms user_platforms_pk; Type: CONSTRAINT; Schema: users; Owner: -
+--
+
+ALTER TABLE ONLY users.user_platforms
+    ADD CONSTRAINT user_platforms_pk PRIMARY KEY (user_id, name, platform_id);
+
+
+--
+-- TOC entry 3520 (class 2606 OID 107117)
 -- Name: users users_pk; Type: CONSTRAINT; Schema: users; Owner: -
 --
 
@@ -2624,7 +2960,7 @@ ALTER TABLE ONLY users.users
 
 
 --
--- TOC entry 3499 (class 2606 OID 49339)
+-- TOC entry 3532 (class 2606 OID 49339)
 -- Name: zones zones_pk; Type: CONSTRAINT; Schema: users; Owner: -
 --
 
@@ -2633,7 +2969,55 @@ ALTER TABLE ONLY users.zones
 
 
 --
--- TOC entry 3535 (class 1259 OID 98490)
+-- TOC entry 3737 (class 1259 OID 107173)
+-- Name: transactions_file_name_idx; Type: INDEX; Schema: logs; Owner: -
+--
+
+CREATE INDEX transactions_file_name_idx ON logs.transactions USING btree (file_name);
+
+
+--
+-- TOC entry 3738 (class 1259 OID 107169)
+-- Name: transactions_hospcode_idx; Type: INDEX; Schema: logs; Owner: -
+--
+
+CREATE INDEX transactions_hospcode_idx ON logs.transactions USING btree (hospcode);
+
+
+--
+-- TOC entry 3739 (class 1259 OID 107172)
+-- Name: transactions_ingress_zone_idx; Type: INDEX; Schema: logs; Owner: -
+--
+
+CREATE INDEX transactions_ingress_zone_idx ON logs.transactions USING btree (ingress_zone);
+
+
+--
+-- TOC entry 3742 (class 1259 OID 107187)
+-- Name: transactions_status_idx; Type: INDEX; Schema: logs; Owner: -
+--
+
+CREATE INDEX transactions_status_idx ON logs.transactions USING btree (status);
+
+
+--
+-- TOC entry 3743 (class 1259 OID 107170)
+-- Name: transactions_user_id_idx; Type: INDEX; Schema: logs; Owner: -
+--
+
+CREATE INDEX transactions_user_id_idx ON logs.transactions USING btree (user_id);
+
+
+--
+-- TOC entry 3732 (class 1259 OID 107176)
+-- Name: person_cid_idx; Type: INDEX; Schema: metadata; Owner: -
+--
+
+CREATE INDEX person_cid_idx ON metadata.person USING btree (cid);
+
+
+--
+-- TOC entry 3568 (class 1259 OID 98490)
 -- Name: appoint_an_idx; Type: INDEX; Schema: rawdata_kk; Owner: -
 --
 
@@ -2641,7 +3025,7 @@ CREATE INDEX appoint_an_idx ON rawdata_kk.appoint USING btree (an);
 
 
 --
--- TOC entry 3538 (class 1259 OID 98491)
+-- TOC entry 3571 (class 1259 OID 98491)
 -- Name: appoint_seq_idx; Type: INDEX; Schema: rawdata_kk; Owner: -
 --
 
@@ -2649,7 +3033,7 @@ CREATE INDEX appoint_seq_idx ON rawdata_kk.appoint USING btree (seq);
 
 
 --
--- TOC entry 3539 (class 1259 OID 98492)
+-- TOC entry 3572 (class 1259 OID 98492)
 -- Name: chronic_hosp_dx_idx; Type: INDEX; Schema: rawdata_kk; Owner: -
 --
 
@@ -2657,7 +3041,7 @@ CREATE INDEX chronic_hosp_dx_idx ON rawdata_kk.chronic USING btree (hosp_dx);
 
 
 --
--- TOC entry 3540 (class 1259 OID 98493)
+-- TOC entry 3573 (class 1259 OID 98493)
 -- Name: chronic_hosp_rx_idx; Type: INDEX; Schema: rawdata_kk; Owner: -
 --
 
@@ -2665,7 +3049,7 @@ CREATE INDEX chronic_hosp_rx_idx ON rawdata_kk.chronic USING btree (hosp_rx);
 
 
 --
--- TOC entry 3545 (class 1259 OID 98494)
+-- TOC entry 3578 (class 1259 OID 98494)
 -- Name: drugallergy_informant_idx; Type: INDEX; Schema: rawdata_kk; Owner: -
 --
 
@@ -2673,7 +3057,7 @@ CREATE INDEX drugallergy_informant_idx ON rawdata_kk.drugallergy USING btree (in
 
 
 --
--- TOC entry 3546 (class 1259 OID 98495)
+-- TOC entry 3579 (class 1259 OID 98495)
 -- Name: drugallergy_informhosp_idx; Type: INDEX; Schema: rawdata_kk; Owner: -
 --
 
@@ -2681,7 +3065,7 @@ CREATE INDEX drugallergy_informhosp_idx ON rawdata_kk.drugallergy USING btree (i
 
 
 --
--- TOC entry 3549 (class 1259 OID 98496)
+-- TOC entry 3582 (class 1259 OID 98496)
 -- Name: drugallergy_symptom_idx; Type: INDEX; Schema: rawdata_kk; Owner: -
 --
 
@@ -2689,7 +3073,7 @@ CREATE INDEX drugallergy_symptom_idx ON rawdata_kk.drugallergy USING btree (symp
 
 
 --
--- TOC entry 3550 (class 1259 OID 98497)
+-- TOC entry 3583 (class 1259 OID 98497)
 -- Name: ipd_dateadm_idx; Type: INDEX; Schema: rawdata_kk; Owner: -
 --
 
@@ -2697,7 +3081,7 @@ CREATE INDEX ipd_dateadm_idx ON rawdata_kk.ipd USING btree (dateadm);
 
 
 --
--- TOC entry 3553 (class 1259 OID 98498)
+-- TOC entry 3586 (class 1259 OID 98498)
 -- Name: ipdx_dxtype_idx; Type: INDEX; Schema: rawdata_kk; Owner: -
 --
 
@@ -2705,7 +3089,7 @@ CREATE INDEX ipdx_dxtype_idx ON rawdata_kk.ipdx USING btree (dxtype);
 
 
 --
--- TOC entry 3556 (class 1259 OID 98499)
+-- TOC entry 3589 (class 1259 OID 98499)
 -- Name: ipop_optype_idx; Type: INDEX; Schema: rawdata_kk; Owner: -
 --
 
@@ -2713,7 +3097,7 @@ CREATE INDEX ipop_optype_idx ON rawdata_kk.ipop USING btree (optype);
 
 
 --
--- TOC entry 3567 (class 1259 OID 98500)
+-- TOC entry 3600 (class 1259 OID 98500)
 -- Name: person_amphur_idx; Type: INDEX; Schema: rawdata_kk; Owner: -
 --
 
@@ -2721,7 +3105,7 @@ CREATE INDEX person_amphur_idx ON rawdata_kk.person USING btree (amphur);
 
 
 --
--- TOC entry 3568 (class 1259 OID 98501)
+-- TOC entry 3601 (class 1259 OID 98501)
 -- Name: person_changwat_idx; Type: INDEX; Schema: rawdata_kk; Owner: -
 --
 
@@ -2729,7 +3113,7 @@ CREATE INDEX person_changwat_idx ON rawdata_kk.person USING btree (changwat);
 
 
 --
--- TOC entry 3569 (class 1259 OID 98502)
+-- TOC entry 3602 (class 1259 OID 98502)
 -- Name: person_cid_idx; Type: INDEX; Schema: rawdata_kk; Owner: -
 --
 
@@ -2737,7 +3121,7 @@ CREATE INDEX person_cid_idx ON rawdata_kk.person USING btree (cid);
 
 
 --
--- TOC entry 3570 (class 1259 OID 98503)
+-- TOC entry 3603 (class 1259 OID 98503)
 -- Name: person_nation_idx; Type: INDEX; Schema: rawdata_kk; Owner: -
 --
 
@@ -2745,7 +3129,7 @@ CREATE INDEX person_nation_idx ON rawdata_kk.person USING btree (nation);
 
 
 --
--- TOC entry 3571 (class 1259 OID 98504)
+-- TOC entry 3604 (class 1259 OID 98504)
 -- Name: person_occupation_idx; Type: INDEX; Schema: rawdata_kk; Owner: -
 --
 
@@ -2753,7 +3137,7 @@ CREATE INDEX person_occupation_idx ON rawdata_kk.person USING btree (occupation)
 
 
 --
--- TOC entry 3574 (class 1259 OID 98505)
+-- TOC entry 3607 (class 1259 OID 98505)
 -- Name: person_tambol_idx; Type: INDEX; Schema: rawdata_kk; Owner: -
 --
 
@@ -2761,7 +3145,7 @@ CREATE INDEX person_tambol_idx ON rawdata_kk.person USING btree (tambol);
 
 
 --
--- TOC entry 3575 (class 1259 OID 98506)
+-- TOC entry 3608 (class 1259 OID 98506)
 -- Name: person_typearea_idx; Type: INDEX; Schema: rawdata_kk; Owner: -
 --
 
@@ -2769,7 +3153,7 @@ CREATE INDEX person_typearea_idx ON rawdata_kk.person USING btree (typearea);
 
 
 --
--- TOC entry 3658 (class 1259 OID 98743)
+-- TOC entry 3691 (class 1259 OID 98743)
 -- Name: appoint_an_idx; Type: INDEX; Schema: rawdata_kls; Owner: -
 --
 
@@ -2777,7 +3161,7 @@ CREATE INDEX appoint_an_idx ON rawdata_kls.appoint USING btree (an);
 
 
 --
--- TOC entry 3661 (class 1259 OID 98744)
+-- TOC entry 3694 (class 1259 OID 98744)
 -- Name: appoint_seq_idx; Type: INDEX; Schema: rawdata_kls; Owner: -
 --
 
@@ -2785,7 +3169,7 @@ CREATE INDEX appoint_seq_idx ON rawdata_kls.appoint USING btree (seq);
 
 
 --
--- TOC entry 3662 (class 1259 OID 98745)
+-- TOC entry 3695 (class 1259 OID 98745)
 -- Name: chronic_hosp_dx_idx; Type: INDEX; Schema: rawdata_kls; Owner: -
 --
 
@@ -2793,7 +3177,7 @@ CREATE INDEX chronic_hosp_dx_idx ON rawdata_kls.chronic USING btree (hosp_dx);
 
 
 --
--- TOC entry 3663 (class 1259 OID 98746)
+-- TOC entry 3696 (class 1259 OID 98746)
 -- Name: chronic_hosp_rx_idx; Type: INDEX; Schema: rawdata_kls; Owner: -
 --
 
@@ -2801,7 +3185,7 @@ CREATE INDEX chronic_hosp_rx_idx ON rawdata_kls.chronic USING btree (hosp_rx);
 
 
 --
--- TOC entry 3668 (class 1259 OID 98747)
+-- TOC entry 3701 (class 1259 OID 98747)
 -- Name: drugallergy_informant_idx; Type: INDEX; Schema: rawdata_kls; Owner: -
 --
 
@@ -2809,7 +3193,7 @@ CREATE INDEX drugallergy_informant_idx ON rawdata_kls.drugallergy USING btree (i
 
 
 --
--- TOC entry 3669 (class 1259 OID 98748)
+-- TOC entry 3702 (class 1259 OID 98748)
 -- Name: drugallergy_informhosp_idx; Type: INDEX; Schema: rawdata_kls; Owner: -
 --
 
@@ -2817,7 +3201,7 @@ CREATE INDEX drugallergy_informhosp_idx ON rawdata_kls.drugallergy USING btree (
 
 
 --
--- TOC entry 3672 (class 1259 OID 98749)
+-- TOC entry 3705 (class 1259 OID 98749)
 -- Name: drugallergy_symptom_idx; Type: INDEX; Schema: rawdata_kls; Owner: -
 --
 
@@ -2825,7 +3209,7 @@ CREATE INDEX drugallergy_symptom_idx ON rawdata_kls.drugallergy USING btree (sym
 
 
 --
--- TOC entry 3673 (class 1259 OID 98750)
+-- TOC entry 3706 (class 1259 OID 98750)
 -- Name: ipd_dateadm_idx; Type: INDEX; Schema: rawdata_kls; Owner: -
 --
 
@@ -2833,7 +3217,7 @@ CREATE INDEX ipd_dateadm_idx ON rawdata_kls.ipd USING btree (dateadm);
 
 
 --
--- TOC entry 3676 (class 1259 OID 98751)
+-- TOC entry 3709 (class 1259 OID 98751)
 -- Name: ipdx_dxtype_idx; Type: INDEX; Schema: rawdata_kls; Owner: -
 --
 
@@ -2841,7 +3225,7 @@ CREATE INDEX ipdx_dxtype_idx ON rawdata_kls.ipdx USING btree (dxtype);
 
 
 --
--- TOC entry 3679 (class 1259 OID 98752)
+-- TOC entry 3712 (class 1259 OID 98752)
 -- Name: ipop_optype_idx; Type: INDEX; Schema: rawdata_kls; Owner: -
 --
 
@@ -2849,7 +3233,7 @@ CREATE INDEX ipop_optype_idx ON rawdata_kls.ipop USING btree (optype);
 
 
 --
--- TOC entry 3690 (class 1259 OID 98753)
+-- TOC entry 3723 (class 1259 OID 98753)
 -- Name: person_amphur_idx; Type: INDEX; Schema: rawdata_kls; Owner: -
 --
 
@@ -2857,7 +3241,7 @@ CREATE INDEX person_amphur_idx ON rawdata_kls.person USING btree (amphur);
 
 
 --
--- TOC entry 3691 (class 1259 OID 98754)
+-- TOC entry 3724 (class 1259 OID 98754)
 -- Name: person_changwat_idx; Type: INDEX; Schema: rawdata_kls; Owner: -
 --
 
@@ -2865,7 +3249,7 @@ CREATE INDEX person_changwat_idx ON rawdata_kls.person USING btree (changwat);
 
 
 --
--- TOC entry 3692 (class 1259 OID 98755)
+-- TOC entry 3725 (class 1259 OID 98755)
 -- Name: person_cid_idx; Type: INDEX; Schema: rawdata_kls; Owner: -
 --
 
@@ -2873,7 +3257,7 @@ CREATE INDEX person_cid_idx ON rawdata_kls.person USING btree (cid);
 
 
 --
--- TOC entry 3693 (class 1259 OID 98756)
+-- TOC entry 3726 (class 1259 OID 98756)
 -- Name: person_nation_idx; Type: INDEX; Schema: rawdata_kls; Owner: -
 --
 
@@ -2881,7 +3265,7 @@ CREATE INDEX person_nation_idx ON rawdata_kls.person USING btree (nation);
 
 
 --
--- TOC entry 3694 (class 1259 OID 98757)
+-- TOC entry 3727 (class 1259 OID 98757)
 -- Name: person_occupation_idx; Type: INDEX; Schema: rawdata_kls; Owner: -
 --
 
@@ -2889,7 +3273,7 @@ CREATE INDEX person_occupation_idx ON rawdata_kls.person USING btree (occupation
 
 
 --
--- TOC entry 3697 (class 1259 OID 98758)
+-- TOC entry 3730 (class 1259 OID 98758)
 -- Name: person_tambol_idx; Type: INDEX; Schema: rawdata_kls; Owner: -
 --
 
@@ -2897,7 +3281,7 @@ CREATE INDEX person_tambol_idx ON rawdata_kls.person USING btree (tambol);
 
 
 --
--- TOC entry 3698 (class 1259 OID 98759)
+-- TOC entry 3731 (class 1259 OID 98759)
 -- Name: person_typearea_idx; Type: INDEX; Schema: rawdata_kls; Owner: -
 --
 
@@ -2905,7 +3289,7 @@ CREATE INDEX person_typearea_idx ON rawdata_kls.person USING btree (typearea);
 
 
 --
--- TOC entry 3576 (class 1259 OID 98572)
+-- TOC entry 3609 (class 1259 OID 98572)
 -- Name: appoint_an_idx; Type: INDEX; Schema: rawdata_msk; Owner: -
 --
 
@@ -2913,7 +3297,7 @@ CREATE INDEX appoint_an_idx ON rawdata_msk.appoint USING btree (an);
 
 
 --
--- TOC entry 3579 (class 1259 OID 98573)
+-- TOC entry 3612 (class 1259 OID 98573)
 -- Name: appoint_seq_idx; Type: INDEX; Schema: rawdata_msk; Owner: -
 --
 
@@ -2921,7 +3305,7 @@ CREATE INDEX appoint_seq_idx ON rawdata_msk.appoint USING btree (seq);
 
 
 --
--- TOC entry 3580 (class 1259 OID 98574)
+-- TOC entry 3613 (class 1259 OID 98574)
 -- Name: chronic_hosp_dx_idx; Type: INDEX; Schema: rawdata_msk; Owner: -
 --
 
@@ -2929,7 +3313,7 @@ CREATE INDEX chronic_hosp_dx_idx ON rawdata_msk.chronic USING btree (hosp_dx);
 
 
 --
--- TOC entry 3581 (class 1259 OID 98575)
+-- TOC entry 3614 (class 1259 OID 98575)
 -- Name: chronic_hosp_rx_idx; Type: INDEX; Schema: rawdata_msk; Owner: -
 --
 
@@ -2937,7 +3321,7 @@ CREATE INDEX chronic_hosp_rx_idx ON rawdata_msk.chronic USING btree (hosp_rx);
 
 
 --
--- TOC entry 3586 (class 1259 OID 98576)
+-- TOC entry 3619 (class 1259 OID 98576)
 -- Name: drugallergy_informant_idx; Type: INDEX; Schema: rawdata_msk; Owner: -
 --
 
@@ -2945,7 +3329,7 @@ CREATE INDEX drugallergy_informant_idx ON rawdata_msk.drugallergy USING btree (i
 
 
 --
--- TOC entry 3587 (class 1259 OID 98577)
+-- TOC entry 3620 (class 1259 OID 98577)
 -- Name: drugallergy_informhosp_idx; Type: INDEX; Schema: rawdata_msk; Owner: -
 --
 
@@ -2953,7 +3337,7 @@ CREATE INDEX drugallergy_informhosp_idx ON rawdata_msk.drugallergy USING btree (
 
 
 --
--- TOC entry 3590 (class 1259 OID 98578)
+-- TOC entry 3623 (class 1259 OID 98578)
 -- Name: drugallergy_symptom_idx; Type: INDEX; Schema: rawdata_msk; Owner: -
 --
 
@@ -2961,7 +3345,7 @@ CREATE INDEX drugallergy_symptom_idx ON rawdata_msk.drugallergy USING btree (sym
 
 
 --
--- TOC entry 3591 (class 1259 OID 98579)
+-- TOC entry 3624 (class 1259 OID 98579)
 -- Name: ipd_dateadm_idx; Type: INDEX; Schema: rawdata_msk; Owner: -
 --
 
@@ -2969,7 +3353,7 @@ CREATE INDEX ipd_dateadm_idx ON rawdata_msk.ipd USING btree (dateadm);
 
 
 --
--- TOC entry 3594 (class 1259 OID 98580)
+-- TOC entry 3627 (class 1259 OID 98580)
 -- Name: ipdx_dxtype_idx; Type: INDEX; Schema: rawdata_msk; Owner: -
 --
 
@@ -2977,7 +3361,7 @@ CREATE INDEX ipdx_dxtype_idx ON rawdata_msk.ipdx USING btree (dxtype);
 
 
 --
--- TOC entry 3597 (class 1259 OID 98581)
+-- TOC entry 3630 (class 1259 OID 98581)
 -- Name: ipop_optype_idx; Type: INDEX; Schema: rawdata_msk; Owner: -
 --
 
@@ -2985,7 +3369,7 @@ CREATE INDEX ipop_optype_idx ON rawdata_msk.ipop USING btree (optype);
 
 
 --
--- TOC entry 3608 (class 1259 OID 98582)
+-- TOC entry 3641 (class 1259 OID 98582)
 -- Name: person_amphur_idx; Type: INDEX; Schema: rawdata_msk; Owner: -
 --
 
@@ -2993,7 +3377,7 @@ CREATE INDEX person_amphur_idx ON rawdata_msk.person USING btree (amphur);
 
 
 --
--- TOC entry 3609 (class 1259 OID 98583)
+-- TOC entry 3642 (class 1259 OID 98583)
 -- Name: person_changwat_idx; Type: INDEX; Schema: rawdata_msk; Owner: -
 --
 
@@ -3001,7 +3385,7 @@ CREATE INDEX person_changwat_idx ON rawdata_msk.person USING btree (changwat);
 
 
 --
--- TOC entry 3610 (class 1259 OID 98584)
+-- TOC entry 3643 (class 1259 OID 98584)
 -- Name: person_cid_idx; Type: INDEX; Schema: rawdata_msk; Owner: -
 --
 
@@ -3009,7 +3393,7 @@ CREATE INDEX person_cid_idx ON rawdata_msk.person USING btree (cid);
 
 
 --
--- TOC entry 3611 (class 1259 OID 98585)
+-- TOC entry 3644 (class 1259 OID 98585)
 -- Name: person_nation_idx; Type: INDEX; Schema: rawdata_msk; Owner: -
 --
 
@@ -3017,7 +3401,7 @@ CREATE INDEX person_nation_idx ON rawdata_msk.person USING btree (nation);
 
 
 --
--- TOC entry 3612 (class 1259 OID 98586)
+-- TOC entry 3645 (class 1259 OID 98586)
 -- Name: person_occupation_idx; Type: INDEX; Schema: rawdata_msk; Owner: -
 --
 
@@ -3025,7 +3409,7 @@ CREATE INDEX person_occupation_idx ON rawdata_msk.person USING btree (occupation
 
 
 --
--- TOC entry 3615 (class 1259 OID 98587)
+-- TOC entry 3648 (class 1259 OID 98587)
 -- Name: person_tambol_idx; Type: INDEX; Schema: rawdata_msk; Owner: -
 --
 
@@ -3033,7 +3417,7 @@ CREATE INDEX person_tambol_idx ON rawdata_msk.person USING btree (tambol);
 
 
 --
--- TOC entry 3616 (class 1259 OID 98588)
+-- TOC entry 3649 (class 1259 OID 98588)
 -- Name: person_typearea_idx; Type: INDEX; Schema: rawdata_msk; Owner: -
 --
 
@@ -3041,7 +3425,7 @@ CREATE INDEX person_typearea_idx ON rawdata_msk.person USING btree (typearea);
 
 
 --
--- TOC entry 3617 (class 1259 OID 98657)
+-- TOC entry 3650 (class 1259 OID 98657)
 -- Name: appoint_an_idx; Type: INDEX; Schema: rawdata_roiet; Owner: -
 --
 
@@ -3049,7 +3433,7 @@ CREATE INDEX appoint_an_idx ON rawdata_roiet.appoint USING btree (an);
 
 
 --
--- TOC entry 3620 (class 1259 OID 98658)
+-- TOC entry 3653 (class 1259 OID 98658)
 -- Name: appoint_seq_idx; Type: INDEX; Schema: rawdata_roiet; Owner: -
 --
 
@@ -3057,7 +3441,7 @@ CREATE INDEX appoint_seq_idx ON rawdata_roiet.appoint USING btree (seq);
 
 
 --
--- TOC entry 3621 (class 1259 OID 98659)
+-- TOC entry 3654 (class 1259 OID 98659)
 -- Name: chronic_hosp_dx_idx; Type: INDEX; Schema: rawdata_roiet; Owner: -
 --
 
@@ -3065,7 +3449,7 @@ CREATE INDEX chronic_hosp_dx_idx ON rawdata_roiet.chronic USING btree (hosp_dx);
 
 
 --
--- TOC entry 3622 (class 1259 OID 98660)
+-- TOC entry 3655 (class 1259 OID 98660)
 -- Name: chronic_hosp_rx_idx; Type: INDEX; Schema: rawdata_roiet; Owner: -
 --
 
@@ -3073,7 +3457,7 @@ CREATE INDEX chronic_hosp_rx_idx ON rawdata_roiet.chronic USING btree (hosp_rx);
 
 
 --
--- TOC entry 3627 (class 1259 OID 98661)
+-- TOC entry 3660 (class 1259 OID 98661)
 -- Name: drugallergy_informant_idx; Type: INDEX; Schema: rawdata_roiet; Owner: -
 --
 
@@ -3081,7 +3465,7 @@ CREATE INDEX drugallergy_informant_idx ON rawdata_roiet.drugallergy USING btree 
 
 
 --
--- TOC entry 3628 (class 1259 OID 98662)
+-- TOC entry 3661 (class 1259 OID 98662)
 -- Name: drugallergy_informhosp_idx; Type: INDEX; Schema: rawdata_roiet; Owner: -
 --
 
@@ -3089,7 +3473,7 @@ CREATE INDEX drugallergy_informhosp_idx ON rawdata_roiet.drugallergy USING btree
 
 
 --
--- TOC entry 3631 (class 1259 OID 98663)
+-- TOC entry 3664 (class 1259 OID 98663)
 -- Name: drugallergy_symptom_idx; Type: INDEX; Schema: rawdata_roiet; Owner: -
 --
 
@@ -3097,7 +3481,7 @@ CREATE INDEX drugallergy_symptom_idx ON rawdata_roiet.drugallergy USING btree (s
 
 
 --
--- TOC entry 3632 (class 1259 OID 98664)
+-- TOC entry 3665 (class 1259 OID 98664)
 -- Name: ipd_dateadm_idx; Type: INDEX; Schema: rawdata_roiet; Owner: -
 --
 
@@ -3105,7 +3489,7 @@ CREATE INDEX ipd_dateadm_idx ON rawdata_roiet.ipd USING btree (dateadm);
 
 
 --
--- TOC entry 3635 (class 1259 OID 98665)
+-- TOC entry 3668 (class 1259 OID 98665)
 -- Name: ipdx_dxtype_idx; Type: INDEX; Schema: rawdata_roiet; Owner: -
 --
 
@@ -3113,7 +3497,7 @@ CREATE INDEX ipdx_dxtype_idx ON rawdata_roiet.ipdx USING btree (dxtype);
 
 
 --
--- TOC entry 3638 (class 1259 OID 98666)
+-- TOC entry 3671 (class 1259 OID 98666)
 -- Name: ipop_optype_idx; Type: INDEX; Schema: rawdata_roiet; Owner: -
 --
 
@@ -3121,7 +3505,7 @@ CREATE INDEX ipop_optype_idx ON rawdata_roiet.ipop USING btree (optype);
 
 
 --
--- TOC entry 3649 (class 1259 OID 98667)
+-- TOC entry 3682 (class 1259 OID 98667)
 -- Name: person_amphur_idx; Type: INDEX; Schema: rawdata_roiet; Owner: -
 --
 
@@ -3129,7 +3513,7 @@ CREATE INDEX person_amphur_idx ON rawdata_roiet.person USING btree (amphur);
 
 
 --
--- TOC entry 3650 (class 1259 OID 98668)
+-- TOC entry 3683 (class 1259 OID 98668)
 -- Name: person_changwat_idx; Type: INDEX; Schema: rawdata_roiet; Owner: -
 --
 
@@ -3137,7 +3521,7 @@ CREATE INDEX person_changwat_idx ON rawdata_roiet.person USING btree (changwat);
 
 
 --
--- TOC entry 3651 (class 1259 OID 98669)
+-- TOC entry 3684 (class 1259 OID 98669)
 -- Name: person_cid_idx; Type: INDEX; Schema: rawdata_roiet; Owner: -
 --
 
@@ -3145,7 +3529,7 @@ CREATE INDEX person_cid_idx ON rawdata_roiet.person USING btree (cid);
 
 
 --
--- TOC entry 3652 (class 1259 OID 98670)
+-- TOC entry 3685 (class 1259 OID 98670)
 -- Name: person_nation_idx; Type: INDEX; Schema: rawdata_roiet; Owner: -
 --
 
@@ -3153,7 +3537,7 @@ CREATE INDEX person_nation_idx ON rawdata_roiet.person USING btree (nation);
 
 
 --
--- TOC entry 3653 (class 1259 OID 98671)
+-- TOC entry 3686 (class 1259 OID 98671)
 -- Name: person_occupation_idx; Type: INDEX; Schema: rawdata_roiet; Owner: -
 --
 
@@ -3161,7 +3545,7 @@ CREATE INDEX person_occupation_idx ON rawdata_roiet.person USING btree (occupati
 
 
 --
--- TOC entry 3656 (class 1259 OID 98672)
+-- TOC entry 3689 (class 1259 OID 98672)
 -- Name: person_tambol_idx; Type: INDEX; Schema: rawdata_roiet; Owner: -
 --
 
@@ -3169,7 +3553,7 @@ CREATE INDEX person_tambol_idx ON rawdata_roiet.person USING btree (tambol);
 
 
 --
--- TOC entry 3657 (class 1259 OID 98673)
+-- TOC entry 3690 (class 1259 OID 98673)
 -- Name: person_typearea_idx; Type: INDEX; Schema: rawdata_roiet; Owner: -
 --
 
@@ -3177,7 +3561,7 @@ CREATE INDEX person_typearea_idx ON rawdata_roiet.person USING btree (typearea);
 
 
 --
--- TOC entry 3492 (class 1259 OID 41117)
+-- TOC entry 3525 (class 1259 OID 41117)
 -- Name: admin_enabled_idx; Type: INDEX; Schema: users; Owner: -
 --
 
@@ -3185,7 +3569,7 @@ CREATE INDEX admin_enabled_idx ON users.admin USING btree (enabled);
 
 
 --
--- TOC entry 3493 (class 1259 OID 41115)
+-- TOC entry 3526 (class 1259 OID 41115)
 -- Name: admin_id_idx; Type: INDEX; Schema: users; Owner: -
 --
 
@@ -3193,7 +3577,7 @@ CREATE UNIQUE INDEX admin_id_idx ON users.admin USING btree (id);
 
 
 --
--- TOC entry 3494 (class 1259 OID 41116)
+-- TOC entry 3527 (class 1259 OID 41116)
 -- Name: admin_password_idx; Type: INDEX; Schema: users; Owner: -
 --
 
@@ -3201,7 +3585,7 @@ CREATE INDEX admin_password_idx ON users.admin USING btree (password);
 
 
 --
--- TOC entry 3488 (class 1259 OID 41132)
+-- TOC entry 3521 (class 1259 OID 41132)
 -- Name: hospitals_enabled_idx; Type: INDEX; Schema: users; Owner: -
 --
 
@@ -3209,7 +3593,7 @@ CREATE INDEX hospitals_enabled_idx ON users.hospitals USING btree (enabled);
 
 
 --
--- TOC entry 3491 (class 1259 OID 49305)
+-- TOC entry 3524 (class 1259 OID 49305)
 -- Name: hospitals_province_code_idx; Type: INDEX; Schema: users; Owner: -
 --
 
@@ -3217,7 +3601,15 @@ CREATE INDEX hospitals_province_code_idx ON users.hospitals USING btree (zone_co
 
 
 --
--- TOC entry 3500 (class 1259 OID 65663)
+-- TOC entry 3746 (class 1259 OID 115198)
+-- Name: platforms_id_idx; Type: INDEX; Schema: users; Owner: -
+--
+
+CREATE UNIQUE INDEX platforms_id_idx ON users.user_platforms USING btree (id);
+
+
+--
+-- TOC entry 3533 (class 1259 OID 65663)
 -- Name: tokens_expires_at_idx; Type: INDEX; Schema: users; Owner: -
 --
 
@@ -3225,7 +3617,7 @@ CREATE INDEX tokens_expires_at_idx ON users.tokens USING btree (expires_at);
 
 
 --
--- TOC entry 3485 (class 1259 OID 107089)
+-- TOC entry 3518 (class 1259 OID 107089)
 -- Name: users_hospcode_idx; Type: INDEX; Schema: users; Owner: -
 --
 
@@ -3233,7 +3625,7 @@ CREATE INDEX users_hospcode_idx ON users.users USING btree (hospcode);
 
 
 --
--- TOC entry 3497 (class 1259 OID 49286)
+-- TOC entry 3530 (class 1259 OID 49286)
 -- Name: zones_ingress_topic_idx; Type: INDEX; Schema: users; Owner: -
 --
 
@@ -3241,7 +3633,7 @@ CREATE UNIQUE INDEX zones_ingress_topic_idx ON users.zones USING btree (ingress_
 
 
 --
--- TOC entry 3700 (class 2606 OID 49340)
+-- TOC entry 3752 (class 2606 OID 49340)
 -- Name: hospitals hospitals_fk; Type: FK CONSTRAINT; Schema: users; Owner: -
 --
 
@@ -3250,7 +3642,7 @@ ALTER TABLE ONLY users.hospitals
 
 
 --
--- TOC entry 3699 (class 2606 OID 107090)
+-- TOC entry 3751 (class 2606 OID 107090)
 -- Name: users users_fk; Type: FK CONSTRAINT; Schema: users; Owner: -
 --
 
@@ -3258,7 +3650,7 @@ ALTER TABLE ONLY users.users
     ADD CONSTRAINT users_fk FOREIGN KEY (hospcode) REFERENCES users.hospitals(hospcode);
 
 
--- Completed on 2023-02-07 05:39:24
+-- Completed on 2023-02-22 20:37:14
 
 --
 -- PostgreSQL database dump complete
